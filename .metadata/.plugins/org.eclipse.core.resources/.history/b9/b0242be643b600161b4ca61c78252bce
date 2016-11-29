@@ -1,0 +1,38 @@
+agent TerranCommandCenter {
+	module EIS eis;
+	module Console console;
+	module System system;
+	module Prelude prelude;
+	
+	int test = 0;
+	
+	rule +!main(list args) {
+		//eis.launch("starcraft", "StarcraftEnvironment.jar");
+		eis.launch("starcraft", "EISBW.jar");
+		eis.join("starcraft");
+		eis.init();
+		eis.startEnv();
+		// I need to somehow wait for the game to start here.
+		eis.link("Terran Command Center");
+		console.println(eis.freeEntities());
+		console.println("Command Center online.");
+		
+		
+		
+		while (true) {
+			!deploySCV();
+			test++;
+		}
+	}
+	
+	//rule +$eis.event(string entity, unitAmount("TerranSCV", int amount)) : amount > 50 {
+		
+	//}
+	
+	rule +!deploySCV() {
+		//query(eis.unitAmount("TerranSCV", int amount));
+		//console.println(amount);
+		eis.train("Terran SCV");
+		system.createAgent("SCV" + test+1, "Terran SCV");	// Need to figure out how to just check the amount currently on the map
+	}
+}

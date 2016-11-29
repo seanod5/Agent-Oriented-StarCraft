@@ -1,0 +1,5 @@
+agent Player {
+	rule +!main(list args) {
+		// TODO: Write code here
+	}
+}

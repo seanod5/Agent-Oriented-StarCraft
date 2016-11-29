@@ -1,0 +1,5 @@
+agent TerranBarracks {
+	rule +!main(list args) {
+		// TODO: Write code here
+	}
+}

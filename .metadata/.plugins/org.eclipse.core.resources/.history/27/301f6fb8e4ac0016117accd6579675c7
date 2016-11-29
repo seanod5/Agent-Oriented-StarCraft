@@ -1,0 +1,5 @@
+agent TerranSCV {
+	rule +!main(list args) {
+		
+	}
+}

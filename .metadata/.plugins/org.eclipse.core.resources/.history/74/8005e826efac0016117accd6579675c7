@@ -1,0 +1,23 @@
+agent TerranCommandCenter {
+	module EIS eis;
+	module Console console;
+	module System system;
+	module Prelude prelude;
+	
+	rule +!main(list args) {
+		eis.launch("starcraft", "StarcraftEnvironment.jar");
+		eis.join("starcraft");
+		eis.startEnv();
+		eis.link("Terran Command Center");
+		console.println("Command Center online.");
+		
+		while (true) {
+			!deploySCV();
+		}
+	}
+	
+	rule +!deploySCV() {
+		eis.train("Terran SCV");
+		system.createAgent("SCV" + eis.unitAmount("TerranSCV", n)+1, "Terran SCV");	// Need to figure out how to just check the amount currently on the map
+	}
+}

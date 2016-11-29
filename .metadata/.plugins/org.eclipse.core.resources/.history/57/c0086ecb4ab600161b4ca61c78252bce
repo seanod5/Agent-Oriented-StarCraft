@@ -1,0 +1,19 @@
+agent Player {
+	module EIS eis;
+	module Console console;
+	module System system;
+	module Prelude prelude;
+
+	rule +!main(list args) {
+		//eis.launch("starcraft", "StarcraftEnvironment.jar");
+		eis.launch("starcraft", "EISBW.jar");
+		eis.join("starcraft");
+		eis.init();
+		eis.startEnv();
+		eis.link("player");
+		console.println("Player ready.");
+		console.println(eis.freeEntities());
+		
+		system.createAgent("TCC", "Terran Command Center");
+	}
+}
