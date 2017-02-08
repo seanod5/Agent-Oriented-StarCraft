@@ -1,0 +1,38 @@
+agent Player {
+	module EIS eis;
+	module Console C;
+	module System S;
+	module Prelude P;
+
+	rule +!main(list args) {
+		boolean matchFlag = false;
+		eis.launch("starcraft", "localeisbw-dep.jar");
+		eis.join();
+		eis.init([map("(2)Astral Balance.scm"), own_race("terran"), starcraft_location("C:\\Program Files (x86)\\StarCraft"), debug("true")]);
+		eis.startEnv();
+		eis.link("manager");
+		C.println("Player ready.");  
+		C.println("Free entities: " + eis.freeEntities());
+		C.println("All entities: " + eis.allEntities());
+		
+		list freeEntities = [];
+		while(matchFlag == false) {
+			freeEntities = eis.freeEntities();	// List will contain a Command Center and four SCVs
+			if(P.size(eis.freeEntities()) > 0) {
+				matchFlag = true;
+			}
+		}
+		
+		P.sort_asc(freeEntities);	// Ensures Command Center is top of list
+		S.sleep(2000);
+		S.createAgent(P.headAsString(freeEntities), "TerranCommandCenter");
+		
+		list SCVs = P.tail(freeEntities);
+		
+		forall(string name : SCVs) {
+			C.println(name);
+			S.createAgent(name, "TerranSCV");
+			S.sleep(1000);	// Allows for nicer output
+		}
+	}
+}

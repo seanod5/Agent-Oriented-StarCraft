@@ -1,0 +1,115 @@
+agent Player {
+	module EIS eis;
+	module Console C;
+	module System S;
+	module Prelude P;
+	
+	types model {
+		formula currentSupply(int);	//Number of units currently alive
+		formula totalSupply(int);	//Number; of units the player can have
+		formula unitIDs(list);
+		formula constructSitesX(list);
+		formula constructSitesY(list);
+		formula content(string, int, int);
+		formula minerals(int);
+	}
+	
+	initial currentSupply(4);
+	initial totalSupply(10);
+	initial unitIDs([]);
+	initial constructSitesX([]);
+	initial constructSitesY([]);
+
+	rule +!main(list args) {
+		boolean matchFlag = false;
+		eis.launch("starcraft", "localeisbw-dep.jar");
+		eis.join();
+		eis.init([map("(2)Astral Balance.scm"), own_race("terran"), starcraft_location("C:\\Program Files (x86)\\StarCraft"), debug("true")]);
+		eis.startEnv();
+		eis.link("manager");
+		C.println("Player ready.");  
+		C.println("Free entities: " + eis.freeEntities());
+		C.println("All entities: " + eis.allEntities());
+		
+		list freeEntities = [];
+		while(matchFlag == false) {
+			freeEntities = eis.freeEntities();	// List will contain a Command Center and four SCVs
+			if(P.size(eis.freeEntities()) > 0) {
+				matchFlag = true;
+			}
+		}
+		
+		P.sort_asc(freeEntities);	// Ensures Command Center is top of list
+		S.sleep(2000);
+		C.println(P.headAsString(freeEntities));
+		S.createAgent(P.headAsString(freeEntities), "TerranCommandCenter");
+		
+		list SCVs = P.tail(freeEntities);
+		
+		forall(string ID : SCVs) {
+			C.println(ID);
+			S.createAgent(ID, "TerranSCV");
+			S.sleep(1000);	// Allows for nicer output
+		}
+		
+		while(true) {
+			!play();
+		}	
+	}
+	
+	rule +!play() : minerals(int mins) & currentSupply(int CS) & totalSupply(int TS) {
+		list freeEntities = eis.freeEntities();
+		forall(string ID : freeEntities) {
+			if(eis.getEntityType(ID) == "terranSCV") {
+				S.createAgent(ID, "TerranSCV");
+			}
+			if(eis.getEntityType(ID) == "terranCommandCenter") {
+				S.createAgent(ID, "TerranCommandCenter");
+			}
+		}
+	}
+	
+	rule +!play() {
+		!play();
+	}
+	
+	rule +!buildSupplyDepot() : currentSupply(int CS) & totalSupply(int TS) & constructSitesX(list sitesX) & constructSitesY(list sitesY){
+		list allEntities = eis.allEntities();
+		boolean flag = false;
+		int i = 0;
+		string ID;
+		while(flag == false) {
+			ID = P.valueAsString(allEntities, i);
+			if(eis.getEntityType(ID) == "terranSCV") {
+				flag = true;
+			}
+			i++;
+		}
+		
+		int x = P.headAsInt(sitesX);
+		int y = P.headAsInt(sitesY);
+		send(inform, ID, content("terranSupplyDepot", x, y));
+	}
+	
+	rule +$eis.event(resources(int minerals, int gas, int CS, int TS)) : minerals(int mins) & currentSupply(int prevCS) & totalSupply(int prevTS) {
+		-currentSupply(prevCS);
+		-totalSupply(prevTS);
+		+currentSupply(CS);
+		+totalSupply(TS);
+		-minerals(mins);
+		+minerals(minerals);
+	}
+	
+	rule +$eis.event(currentSupply(int CS)) : totalSupply(int TS) & CS == TS {
+		!buildSupplyDepot();
+	}
+	
+	rule +$eis.event(constructionSite(int x, int y)) : constructSitesX(list prevX) & constructSitesY(list prevY) {
+		list newX = prevX;
+		list newY = prevY;
+		-constructSitesX(prevX);
+		+constructSitesX(newX);
+		-constructSitesY(prevY);
+		+constructSitesY(newY);
+	}
+}
