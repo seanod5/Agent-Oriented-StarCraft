@@ -1,0 +1,61 @@
+agent TerranSCV {
+	module EIS eis;
+	module Console C;
+	module Prelude P;
+	
+	types model {
+		formula availableMinerals(list);
+		formula availableVespene(list);
+		formula content(string, int, int);
+	}
+	
+	initial !init();
+	initial availableMinerals([]);
+	initial availableVespene([]);
+	
+	rule +!init() {
+		eis.join("starcraft");
+		eis.link();
+		C.println("SCV linked.");
+		
+		!gatherMinerals();
+	}
+	
+	rule +!gatherMinerals() : availableMinerals(list L) {
+		int ID = P.valueAsInt(L, 0);
+		eis.gather(ID);
+	}
+	
+	rule +!gatherMinerals() {
+		!gatherMinerals();
+	}
+	
+	rule +!gatherVespene() : availableVespene(list L) {
+		int ID = P.valueAsInt(L, 0);
+		eis.gather(ID);
+	}
+	
+	rule +!buildStructure(string structure, int x, int y) {
+		//To receive message from player
+		eis.build(structure, x, y);
+	}
+	
+	rule +$eis.event(mineralField(int ID, int resources, int group, int x, int y)) : availableMinerals(list prev) {
+		list new = prev;
+		P.add(new, ID);
+		-availableMinerals(prev);
+		+availableMinerals(new);
+	}
+	
+	rule +$eis.event(vespeneGeyser(int ID, int resources, int group, int x, int y)) : availableVespene(list prev) {
+		list new = prev;
+		P.add(new, ID);
+		-availableVespene(prev);
+		+availableVespene(new);
+	}
+	
+	rule @message(inform, string sender, content(string content, int x, int y)) {
+		C.println("Message received from " + sender + ", building " + content);
+		!buildStructure(content, x, y);
+	}
+}

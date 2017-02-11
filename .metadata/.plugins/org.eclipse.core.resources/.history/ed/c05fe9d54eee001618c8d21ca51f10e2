@@ -1,0 +1,94 @@
+agent Player {
+	module EIS eis;
+	module Console C;
+	module System S;
+	module Prelude P;
+	
+	types model {
+		formula currentSupply(int);	//Number of units currently alive
+		formula totalSupply(int);	//Number; of units the player can have
+		formula unitIDs(list);
+		formula content(string);
+		formula minerals(int);
+	}
+	
+	initial minerals(50);
+	initial currentSupply(4);
+	initial totalSupply(10);
+	initial unitIDs([]);
+
+	rule +!main(list args) {
+		boolean matchFlag = false;
+		eis.launch("starcraft", "localeisbw-dep.jar");
+		eis.join();
+		eis.init([map("(2)Astral Balance.scm"), own_race("terran"), starcraft_location("C:\\Program Files (x86)\\StarCraft"), debug("true")]);
+		eis.startEnv();
+		eis.link("manager");
+		C.println("Player ready.");
+		
+		list freeEntities = [];
+		while(matchFlag == false) {
+			freeEntities = eis.freeEntities();	// List will contain a Command Center and four SCVs
+			if(P.size(eis.freeEntities()) > 0) {
+				matchFlag = true;
+			}
+		}
+		
+		P.sort_asc(freeEntities);	// Ensures Command Center is top of list
+		S.sleep(2000);
+		S.createAgent(P.headAsString(freeEntities), "TerranCommandCenter");
+		
+		list SCVs = P.tail(freeEntities);
+		
+		forall(string ID : SCVs) {
+			S.createAgent(ID, "TerranSCV");
+			S.sleep(500);	// Allows for nicer output
+		}
+		
+//		while(true) {
+			!play();
+//		}	
+	}
+	
+	rule +!play() {
+		list freeEntities = eis.freeEntities();
+		forall(string ID : freeEntities) {
+			if(eis.getEntityType(ID) == "terranSCV") {
+				S.createAgent(ID, "TerranSCV");
+			}
+			if(eis.getEntityType(ID) == "terranCommandCenter") {
+				S.createAgent(ID, "TerranCommandCenter");
+			}
+		}
+	}
+	
+	rule +!buildSupplyDepot() {
+		C.println("Building SD");
+		list allEntities = eis.allEntities();
+		boolean flag = false;
+		int i = 0;
+		string ID;
+		while(flag == false) {
+			ID = P.valueAsString(allEntities, i);
+			if(eis.getEntityType(ID) == "terranSCV") {
+				flag = true;
+			}
+			i++;
+		}
+		
+		send(inform, ID, content("terranSupplyDepot"));
+		C.println("Message sent.");
+		!play();
+	}
+	
+	rule +$eis.event(resources(int minerals, int gas, int CS, int TS)) {
+
+		C.println("Nope. " + CS + ", " + TS);
+	
+	}
+	
+//	rule +$eis.event(currentSupply(int CS)) : totalSupply(int TS) & CS == TS & minerals(int mins) & mins > 100 {
+//	C.println("Event detected");
+//		!buildSupplyDepot();
+//	}
+}

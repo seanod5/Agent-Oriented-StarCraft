@@ -10,6 +10,8 @@ agent TerranCommandCenter {
 		formula currentSupply(int);	//Number of units currently alive
 		formula totalSupply(int);	//Number of units the player can have
 		formula queueSize(int);
+		formula content(string);
+		formula constructing(boolean);	//Using this temporarily to use the wait() function
 	}
 	
 	initial minerals(50);
@@ -17,6 +19,7 @@ agent TerranCommandCenter {
 	initial currentSupply(4);
 	initial totalSupply(10);
 	initial queueSize(0);	//Not sure if these values should be hardcoded or if I should use a flag at the start of the game
+	initial constructing(false);
 	initial !init();		//I could just call !init() in the mineral check event ^^^
 	
 	rule +!init() {
@@ -31,7 +34,7 @@ agent TerranCommandCenter {
 	
 	rule +!trainSCV() : minerals(int minerals) & currentSupply(int CS) & totalSupply(int TS) {
 		if((minerals >= 50) & (CS <= TS)) {
-			C.println("Deploying SCV");
+			//C.println("Deploying SCV");
 			eis.train("Terran SCV");
 			//list temp = eis.freeEntities();
 			//S.createAgent(P.headAsString(temp), "TerranSCV");
@@ -42,7 +45,23 @@ agent TerranCommandCenter {
 		!trainSCV();
 	}
 	
-	rule +$eis.event(resources(int minerals, int gas, int CS, int TS)) : minerals(int prevM) & gas(int prevG) & currentSupply(int prevCS) & totalSupply(int prevTS) {
+	rule +!buildSupplyDepot() {
+		list allEntities = eis.allEntities();
+		boolean flag = false;
+		int i = 0;
+		string ID;
+		while(flag == false) {
+			ID = P.valueAsString(allEntities, i);
+			if(eis.getEntityType(ID) == "terranSCV") {
+				flag = true;
+			}
+			i++;
+		}
+		send(inform, ID, content("Terran Supply Depot"));
+		C.println("Message sent.");
+	}
+			
+	rule +$eis.event(resources(int minerals, int gas, int CS, int TS)) : minerals(int prevM) & gas(int prevG) & currentSupply(int prevCS) & totalSupply(int prevTS) & constructing(boolean constructing) {
 		-minerals(prevM);
 		-gas(prevG);
 		-currentSupply(prevCS);
@@ -51,10 +70,24 @@ agent TerranCommandCenter {
 		+gas(gas);
 		+currentSupply(CS);
 		+totalSupply(TS);
+		
+		if((CS == (TS)) & (constructing == false)) {
+			-constructing(false);
+			+constructing(true);
+			!buildSupplyDepot();
+		}
 	}
 	
 	rule +$eis.event(queueSize(int size)) : queueSize(int prevSize) {
 		-queueSize(prevSize);
 		+queueSize(size);
+	}
+	
+	rule @message(inform, string sender, content(string content)) {
+		C.println("Message received from " + sender + ": " + content);
+		if(content == "Supply Depot Built") {
+			-constructing(true);
+			+constructing(false);
+		}
 	}
 }

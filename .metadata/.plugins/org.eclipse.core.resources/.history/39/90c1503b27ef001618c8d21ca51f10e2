@@ -1,0 +1,94 @@
+agent TerranCommandCenter {
+	module EIS eis;
+	module Console C;
+	module System S;
+	module Prelude P;
+	
+	types model {
+		formula minerals(int);
+		formula gas(int);
+		formula currentSupply(int);	//Number of units currently alive
+		formula totalSupply(int);	//Number of units the player can have
+		formula queueSize(int);
+		formula content(string);
+		formula constructing(boolean);	//Using this temporarily to use the wait() function
+	}
+	
+	initial minerals(50);
+	initial gas(0);
+	initial currentSupply(4);
+	initial totalSupply(10);
+	initial queueSize(0);	//Not sure if these values should be hardcoded or if I should use a flag at the start of the game
+	initial construction(false);
+	initial !init();		//I could just call !init() in the mineral check event ^^^
+	
+	rule +!init() {
+		eis.join("starcraft");
+		eis.link();
+		C.println("Command Center online.");
+		
+		while(true) {
+			!buildSupplyDepot();
+			!trainSCV();
+		}
+	}
+	
+	rule +!trainSCV() : minerals(int minerals) & currentSupply(int CS) & totalSupply(int TS) {
+		if((minerals >= 50) & (CS <= TS)) {
+			//C.println("Deploying SCV");
+			eis.train("Terran SCV");
+			//list temp = eis.freeEntities();
+			//S.createAgent(P.headAsString(temp), "TerranSCV");
+		}
+	}
+	
+	rule +!trainSCV() {
+		!trainSCV();
+	}
+	
+	rule +!buildSupplyDepot() : currentSupply(int CS) & totalSupply(int TS) & CS == TS & constructing(false) {
+		-construction(false);
+		+construction(true);
+		C.println("Building SD");
+		S.sleep(500);
+		list allEntities = eis.allEntities();
+		boolean flag = false;
+		int i = 0;
+		C.println("Stage 1");
+		S.sleep(500);
+		string ID;
+		C.println("Stage 2");
+		S.sleep(500);
+		while(flag == false) {
+			ID = P.valueAsString(allEntities, i);
+			if(eis.getEntityType(ID) == "terranSCV") {
+				flag = true;
+			}
+			i++;
+		}
+		C.println("Stage 3");
+		S.sleep(500);
+		send(inform, ID, content("Terran Supply Depot"));
+		C.println("Message sent.");
+		-construction(true);
+		+construction(false);
+	}
+	
+	rule +!buildSupplyDepot() {}	//Dummy rule
+			
+	rule +$eis.event(resources(int minerals, int gas, int CS, int TS)) : minerals(int prevM) & gas(int prevG) & currentSupply(int prevCS) & totalSupply(int prevTS) {
+		-minerals(prevM);
+		-gas(prevG);
+		-currentSupply(prevCS);
+		-totalSupply(prevTS);
+		+minerals(minerals);
+		+gas(gas);
+		+currentSupply(CS);
+		+totalSupply(TS);
+	}
+	
+	rule +$eis.event(queueSize(int size)) : queueSize(int prevSize) {
+		-queueSize(prevSize);
+		+queueSize(size);
+	}
+}
