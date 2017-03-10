@@ -1,0 +1,9 @@
+agent terranSupplyDepot {
+	module EIS eis;
+	initial !init();
+	
+	rule +!init() {
+		eis.join("starcraft");
+		eis.link();
+	}
+}

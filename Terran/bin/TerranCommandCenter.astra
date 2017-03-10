@@ -1,81 +1,57 @@
-agent TerranCommandCenter {
+agent terranCommandCenter {
 	module EIS eis;
 	module Console C;
 	module System S;
 	module Prelude P;
 	
-	types model {
-		formula minerals(int);
-		formula gas(int);
-		formula currentSupply(int);	//Number of units currently alive
-		formula totalSupply(int);	//Number of units the player can have
+	types status {
 		formula queueSize(int);
-		formula content(string);
-		formula constructing(boolean);	//Using this temporarily to use the wait() function
 	}
 	
+	types resources {
+		formula minerals(int);
+		formula vespeneGas(int);
+		formula currentSupply(int);
+		formula totalSupply(int);
+	}
+	
+	types messages {
+		formula content(string);
+		formula supply(string);
+		formula ready(string);
+		formula explore(int, int);
+	}
+	
+	types checks {
+		formula supplyRequest(boolean);
+	}
+	
+	initial !init();
 	initial minerals(50);
-	initial gas(0);
+	initial vespeneGas(0);
 	initial currentSupply(4);
 	initial totalSupply(10);
-	initial queueSize(0);	//Not sure if these values should be hardcoded or if I should use a flag at the start of the game
-	initial constructing(false);
-	initial !init();		//I could just call !init() in the mineral check event ^^^
+	initial queueSize(0);
+	initial supplyRequest(false);
+	initial waiting(true);
 	
 	rule +!init() {
 		eis.join("starcraft");
 		eis.link();
 		C.println("Command Center online.");
-		
-		while(true) {
+		int i = 0;
+		while(i < 6) {
 			!trainSCV();
+			i++;
 		}
 	}
 	
-	rule +!trainSCV() : minerals(int minerals) & currentSupply(int CS) & totalSupply(int TS) {
-		if((minerals >= 50) & (CS <= TS)) {
-			//C.println("Deploying SCV");
-			eis.train("Terran SCV");
-			//list temp = eis.freeEntities();
-			//S.createAgent(P.headAsString(temp), "TerranSCV");
-		}
+	rule +!trainSCV() : minerals(int minerals) & currentSupply(int CS) & totalSupply(int TS) & (minerals >= 50) & (CS < TS) & queueSize(int queueSize) & (queueSize < 5) {
+		eis.train("Terran SCV");
 	}
 	
 	rule +!trainSCV() {
 		!trainSCV();
-	}
-	
-	rule +!buildSupplyDepot() {
-		list allEntities = eis.allEntities();
-		boolean flag = false;
-		int i = 0;
-		string ID;
-		while(flag == false) {
-			ID = P.valueAsString(allEntities, i);
-			if(eis.getEntityType(ID) == "terranSCV") {
-				flag = true;
-			}
-			i++;
-		}
-		send(inform, ID, content("Terran Supply Depot"));
-		C.println("Message sent.");
-	}
-			
-	rule +$eis.event(resources(int minerals, int gas, int CS, int TS)) : minerals(int prevM) & gas(int prevG) & currentSupply(int prevCS) & totalSupply(int prevTS) & constructing(boolean constructing) {
-		-minerals(prevM);
-		-gas(prevG);
-		-currentSupply(prevCS);
-		-totalSupply(prevTS);
-		+minerals(minerals);
-		+gas(gas);
-		+currentSupply(CS);
-		+totalSupply(TS);
-		
-		if((CS == (TS)) & (constructing == false)) {
-			-constructing(false);
-			+constructing(true);
-			!buildSupplyDepot();
-		}
 	}
 	
 	rule +$eis.event(queueSize(int size)) : queueSize(int prevSize) {
@@ -83,11 +59,63 @@ agent TerranCommandCenter {
 		+queueSize(size);
 	}
 	
-	rule @message(inform, string sender, content(string content)) {
-		C.println("Message received from " + sender + ": " + content);
-		if(content == "Supply Depot Built") {
-			-constructing(true);
-			+constructing(false);
+	rule +$eis.event(resources(int minerals, int gas, int CS, int TS)) :
+	 minerals(int prevM) & vespeneGas(int prevG) & currentSupply(int prevCS) & totalSupply(int prevTS) & supplyRequest(boolean SR) {
+		-minerals(prevM);
+		-vespeneGas(prevG);
+		-currentSupply(prevCS);
+		-totalSupply(prevTS);
+		+minerals(minerals);
+		+vespeneGas(gas);
+		+currentSupply(CS);
+		+totalSupply(TS);
+		
+		if((CS == TS) & (SR == false)) {
+			-supplyRequest(SR);
+			+supplyRequest(true);
+			C.println("Request sent");
+			send(inform, S.getOwner(), ready("ready"));
 		}
 	}
+	
+//	rule +$eis.event(resources(int minerals, int gas, int CS, CS)) : ~supplyRequest(true) {
+//		+supplyRequest(true);
+//		
+//		query(eis.resources(int m, int g, int cs, int ts));
+//		
+//		C.println("m="+m);
+//		C.println("Request sent");
+//		send(inform, S.getOwner(), ready("ready"));
+//	}
+//	
+//	rule @message(inform, string sender, content("Supply Depot Built")) : supplyRequest(true) {
+//		-supplyRequest(true);
+//	}	
+
+	rule +$eis.event(resources(int minerals, int gas, int CS, int TS)) : minerals(int prevM) & vespeneGas(int prevG) & currentSupply(int prevCS) & totalSupply(int prevTS) & supplyRequest(boolean SR) {
+		-minerals(prevM);
+		-vespeneGas(prevG);
+		-currentSupply(prevCS);
+		-totalSupply(prevTS);
+		+minerals(minerals);
+		+vespeneGas(gas);
+		+currentSupply(CS);
+		+totalSupply(TS);
+		
+		if((CS == TS - 4) & (SR == false)) {
+			-supplyRequest(SR);
+			+supplyRequest(true);
+			C.println("Request sent");
+			send(inform, S.getOwner(), ready("ready"));
+			query(eis.base(int x, int y, boolean isStart, int regionID));
+			send(inform, S.getOwner(), explore(x, y));
+		}
+	}
+	
+	rule @message(inform, string sender, content(string content)) : supplyRequest(boolean SR) {
+		if((content == "Supply Depot Built") & (SR == true)) {
+			-supplyRequest(SR);
+			+supplyRequest(false);
+		}
+	}	
 }

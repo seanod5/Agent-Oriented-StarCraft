@@ -1,124 +1,109 @@
-agent TerranSCV {
+agent terranSCV {
 	module EIS eis;
 	module Console C;
 	module Prelude P;
+	module System S;
+	module modules.Lists lists;
+	module modules.Buildings buildings;
+	
+	types messaging {
+		formula content(string);
+		formula built(string);
+		formula building(string);
+		formula explore(int, int);
+	}
 	
 	types status {
-		formula health(int);
-		formula shield(int);
-		formula energy(int);
-		formula x(int);
-		formula y(int);
-	}
-	
-	types condition {
-		formula moving(boolean);
+		formula conditions(list);
+		formula busy(boolean);
 		formula idle(boolean);
-		formula carrying(boolean);
-		formula constructing(boolean);
 	}
 	
-	types model {
-		formula availableMinerals(list);
-		formula availableVespene(list);
-		formula content(string);
-		formula constructSitesX(list);
-		formula constructSitesY(list);
+	types resources {
+		formula minerals(int);
+		formula vespeneGas(int);
 	}
 	
 	initial !init();
-//	initial health(60);
-//	initial shield(0);
-//	initial energy(0);
-	initial condition([]);
-	initial availableMinerals([]);
-	initial availableVespene([]);
-	initial constructSitesX([]);
-	initial constructSitesY([]);
-	initial constructing(false);
+	initial minerals(50);
+	initial vespeneGas(0);
+	initial busy(false);
+	initial conditions(["idle"]);
 	
 	rule +!init() {
 		eis.join("starcraft");
 		eis.link();
-		C.println("SCV linked.");
-		
-		!gatherMinerals();
+		C.println("SCV online.");
 	}
 	
-	rule +!gatherMinerals() : availableMinerals(list L) {
-		int ID = P.valueAsInt(L, 0);
+	rule +!gatherMinerals() : busy(boolean busy) & (busy == false) {
+		query(eis.mineralField(int ID, int resources, int group, int x, int y));
 		eis.gather(ID);
 	}
 	
-	rule +!gatherMinerals() {
-		!gatherMinerals();
-	}
-	
-	rule +!gatherVespene() : availableVespene(list L) {
-		int ID = P.valueAsInt(L, 0);
+	rule +!gatherVespeneGas() {
+		query(eis.vespeneGeyser(int ID, int resources, int group, int x, int y));
 		eis.gather(ID);
 	}
 	
-	rule +!buildStructure(string structure, string sender) : constructSitesX(list sitesX) & constructSitesY(list sitesY) {
-		int x = P.headAsInt(sitesX);
-		int y = P.headAsInt(sitesY);
-		list newX = sitesX;
-		list newY = sitesY;
+	rule +!buildVespeneRefinery() {
+		wait((minerals(int m)) & (m >= 100));
+		query(eis.vespeneGeyser(int ID, int resources, int group, int x, int y));
+		C.println("Building Vespene Refinery at " + x + ", " + y);
+		eis.stop();
+		eis.build("Terran Refinery", x, y);
+		wait((conditions(list conds)) & (~P.contains(conds, "constructing")));
+		-busy(true);
+		+busy(false);
+		send(inform, S.getOwner(), built("Terran Refinery"));
+	}
+	
+	rule +!buildStructure(string structure, int mCost, int gCost) {
+		wait((minerals(int m)) & (m >= mCost) & (vespeneGas(int g)) & (g >= gCost));
+		query(eis.constructionSite(int x, int y));
+		C.println("Building " + structure + " at " + x + ", " + y);
+		eis.stop();
 		eis.build(structure, x, y);
-		C.println("Before wait");
-		wait(constructing(false));
-		C.println("After wait");
-		send(inform, sender, content("Supply Depot Built"));
-		!gatherMinerals();
+		wait((conditions(list conds1)) & (P.contains(conds1, "constructing")));
+		C.println("building...");
+		send(inform, S.getOwner(), building(structure));
+		wait((conditions(list conds2)) & (~P.contains(conds2, "constructing")));
+		C.println("built!");
+		-busy(true);
+		+busy(false);
+		send(inform, S.getOwner(), built((structure)));
 	}
 	
-	rule +$eis.event(mineralField(int ID, int resources, int group, int x, int y)) : availableMinerals(list prev) {
-		list new = prev;
-		P.add(new, ID);
-		-availableMinerals(prev);
-		+availableMinerals(new);
-	}
-	
-	rule +$eis.event(vespeneGeyser(int ID, int resources, int group, int x, int y)) : availableVespene(list prev) {
-		list new = prev;
-		P.add(new, ID);
-		-availableVespene(prev);
-		+availableVespene(new);
-	}
-	
-	rule +$eis.event(constructionSite(int x, int y)) : constructSitesX(list prevX) & constructSitesY(list prevY) {
-		list newX = prevX;
-		list newY = prevY;
-		P.add(newX, x);
-		P.add(newY, y);
-		-constructSitesX(prevX);
-		+constructSitesX(newX);
-		-constructSitesY(prevY);
-		+constructSitesY(newY);
-	}
-	
-	rule +$eis.event(status(int health, int shield, int energy, list conditions, int x, int y)) : constructing(boolean constructing) {
-		boolean flag = false;
-		forall(string condition : conditions) {
-			if(condition == "constructing") {
-				flag = true;
-			}
-		}
+	rule +$eis.event(status(int health, int shield, int energy, list conditions, int x, int y)) : conditions(list prevConds) & busy(boolean busy) {		
+		-conditions(prevConds);
+		+conditions(conditions);
 		
-		if((flag == true) & (constructing == false)) {
-			-constructing(false);
-			+constructing(true);
-			C.println("Construction begun");
+		if(P.contains(conditions, "idle") & (busy == false)) {
+			!gatherMinerals();
 		}
-		else if ((flag == false) & (constructing == true)) {
-			-constructing(true);
-			+constructing(false);
-			C.println("Construction completed");
+	}
+
+	rule +$eis.event(resources(int minerals, int gas, int CS, int TS)) : minerals(int prevM) & vespeneGas(int prevG) {
+		-minerals(prevM);
+		-vespeneGas(prevG);
+		+minerals(minerals);
+		+vespeneGas(gas);
+	}
+	
+	rule @message(inform, string sender, content(string structure)) {
+		-busy(false);
+		+busy(true);
+		eis.stop();
+		if(structure == "Terran Refinery") {
+			!buildVespeneRefinery();
+		}
+		else {
+			list costs = buildings.cost(structure);
+			!buildStructure(structure, P.valueAsInt(costs, 0), P.valueAsInt(costs, 1));
 		}
 	}
 	
-	rule @message(inform, string sender, content(string content)) {
-		C.println("Message received from " + sender + ", building " + content);
-		!buildStructure(content, sender);
+	rule @message(inform, string sender, explore(int x, int y)) {
+		eis.move(x, y);
 	}
 }

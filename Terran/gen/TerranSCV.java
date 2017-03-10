@@ -15,11 +15,11 @@ import astra.tr.*;
 import astra.reasoner.util.*;
 
 
-public class TerranSCV extends ASTRAClass {
-	public TerranSCV() {
+public class terranSCV extends ASTRAClass {
+	public terranSCV() {
 		setParents(new Class[] {astra.lang.Agent.class});
 		addRule(new Rule(
-			"TerranSCV", new int[] {40,9,40,19},
+			"terranSCV", new int[] {33,9,33,19},
 			new GoalEvent('+',
 				new Goal(
 					new Predicate("init", new Term[] {})
@@ -27,10 +27,10 @@ public class TerranSCV extends ASTRAClass {
 			),
 			Predicate.TRUE,
 			new Block(
-				"TerranSCV", new int[] {40,18,46,5},
+				"terranSCV", new int[] {33,18,37,5},
 				new Statement[] {
 					new ModuleCall("eis",
-						"TerranSCV", new int[] {41,8,41,29},
+						"terranSCV", new int[] {34,8,34,29},
 						new Predicate("join", new Term[] {
 							Primitive.newPrimitive("starcraft")
 						}),
@@ -40,14 +40,14 @@ public class TerranSCV extends ASTRAClass {
 							}
 
 							public boolean invoke(Intention intention, Predicate predicate) {
-								return ((astra.lang.EIS) intention.getModule("TerranSCV","eis")).join(
+								return ((astra.lang.EIS) intention.getModule("terranSCV","eis")).join(
 									(java.lang.String) intention.evaluate(predicate.getTerm(0))
 								);
 							}
 						}
 					),
 					new ModuleCall("eis",
-						"TerranSCV", new int[] {42,8,42,18},
+						"terranSCV", new int[] {35,8,35,18},
 						new Predicate("link", new Term[] {}),
 						new DefaultModuleCallAdaptor() {
 							public boolean inline() {
@@ -55,15 +55,15 @@ public class TerranSCV extends ASTRAClass {
 							}
 
 							public boolean invoke(Intention intention, Predicate predicate) {
-								return ((astra.lang.EIS) intention.getModule("TerranSCV","eis")).link(
+								return ((astra.lang.EIS) intention.getModule("terranSCV","eis")).link(
 								);
 							}
 						}
 					),
 					new ModuleCall("C",
-						"TerranSCV", new int[] {43,8,43,32},
+						"terranSCV", new int[] {36,8,36,32},
 						new Predicate("println", new Term[] {
-							Primitive.newPrimitive("SCV linked.")
+							Primitive.newPrimitive("SCV online.")
 						}),
 						new DefaultModuleCallAdaptor() {
 							public boolean inline() {
@@ -71,62 +71,206 @@ public class TerranSCV extends ASTRAClass {
 							}
 
 							public boolean invoke(Intention intention, Predicate predicate) {
-								return ((astra.lang.Console) intention.getModule("TerranSCV","C")).println(
+								return ((astra.lang.Console) intention.getModule("terranSCV","C")).println(
+									(java.lang.String) intention.evaluate(predicate.getTerm(0))
+								);
+							}
+						}
+					)
+				}
+			)
+		));
+		addRule(new Rule(
+			"terranSCV", new int[] {39,9,39,68},
+			new GoalEvent('+',
+				new Goal(
+					new Predicate("gatherMinerals", new Term[] {})
+				)
+			),
+			new AND(
+				new Predicate("busy", new Term[] {
+					new Variable(Type.BOOLEAN, "busy",false)
+				}),
+				new BracketFormula(
+					new Comparison("==",
+						new Variable(Type.BOOLEAN, "busy"),
+						Primitive.newPrimitive(false)
+					)
+				)
+			),
+			new Block(
+				"terranSCV", new int[] {39,67,42,5},
+				new Statement[] {
+					new Query(
+						"terranSCV", new int[] {40,8,40,79},
+						new ModuleFormula("eis",
+							new Predicate("mineralField", new Term[] {
+								new Variable(Type.INTEGER, "ID",false),
+								new Variable(Type.INTEGER, "resources",false),
+								new Variable(Type.INTEGER, "group",false),
+								new Variable(Type.INTEGER, "x",false),
+								new Variable(Type.INTEGER, "y",false)
+							}),
+							new ModuleFormulaAdaptor() {
+								public Formula invoke(BindingsEvaluateVisitor visitor, Predicate predicate) {
+									return ((astra.lang.EIS) visitor.agent().getModule("terranSCV","eis")).auto_formula((Predicate) predicate.accept(visitor));
+								}
+							}
+						)
+					),
+					new ModuleCall("eis",
+						"terranSCV", new int[] {41,8,41,22},
+						new Predicate("gather", new Term[] {
+							new Variable(Type.INTEGER, "ID")
+						}),
+						new DefaultModuleCallAdaptor() {
+							public boolean inline() {
+								return true;
+							}
+
+							public boolean invoke(Intention intention, Predicate predicate) {
+								return ((astra.lang.EIS) intention.getModule("terranSCV","eis")).auto_action(intention,evaluate(intention,predicate));
+							}
+						}
+					)
+				}
+			)
+		));
+		addRule(new Rule(
+			"terranSCV", new int[] {44,9,44,31},
+			new GoalEvent('+',
+				new Goal(
+					new Predicate("gatherVespeneGas", new Term[] {})
+				)
+			),
+			Predicate.TRUE,
+			new Block(
+				"terranSCV", new int[] {44,30,47,5},
+				new Statement[] {
+					new Query(
+						"terranSCV", new int[] {45,8,45,80},
+						new ModuleFormula("eis",
+							new Predicate("vespeneGeyser", new Term[] {
+								new Variable(Type.INTEGER, "ID",false),
+								new Variable(Type.INTEGER, "resources",false),
+								new Variable(Type.INTEGER, "group",false),
+								new Variable(Type.INTEGER, "x",false),
+								new Variable(Type.INTEGER, "y",false)
+							}),
+							new ModuleFormulaAdaptor() {
+								public Formula invoke(BindingsEvaluateVisitor visitor, Predicate predicate) {
+									return ((astra.lang.EIS) visitor.agent().getModule("terranSCV","eis")).auto_formula((Predicate) predicate.accept(visitor));
+								}
+							}
+						)
+					),
+					new ModuleCall("eis",
+						"terranSCV", new int[] {46,8,46,22},
+						new Predicate("gather", new Term[] {
+							new Variable(Type.INTEGER, "ID")
+						}),
+						new DefaultModuleCallAdaptor() {
+							public boolean inline() {
+								return true;
+							}
+
+							public boolean invoke(Intention intention, Predicate predicate) {
+								return ((astra.lang.EIS) intention.getModule("terranSCV","eis")).auto_action(intention,evaluate(intention,predicate));
+							}
+						}
+					)
+				}
+			)
+		));
+		addRule(new Rule(
+			"terranSCV", new int[] {49,9,49,35},
+			new GoalEvent('+',
+				new Goal(
+					new Predicate("buildVespeneRefinery", new Term[] {})
+				)
+			),
+			Predicate.TRUE,
+			new Block(
+				"terranSCV", new int[] {49,34,59,5},
+				new Statement[] {
+					new Wait(
+						"terranSCV", new int[] {50,8,59,5},
+						new AND(
+							new BracketFormula(
+								new Predicate("minerals", new Term[] {
+									new Variable(Type.INTEGER, "m",false)
+								})
+							),
+							new BracketFormula(
+								new Comparison(">=",
+									new Variable(Type.INTEGER, "m"),
+									Primitive.newPrimitive(100)
+								)
+							)
+						)
+					),
+					new Query(
+						"terranSCV", new int[] {51,8,51,80},
+						new ModuleFormula("eis",
+							new Predicate("vespeneGeyser", new Term[] {
+								new Variable(Type.INTEGER, "ID",false),
+								new Variable(Type.INTEGER, "resources",false),
+								new Variable(Type.INTEGER, "group",false),
+								new Variable(Type.INTEGER, "x",false),
+								new Variable(Type.INTEGER, "y",false)
+							}),
+							new ModuleFormulaAdaptor() {
+								public Formula invoke(BindingsEvaluateVisitor visitor, Predicate predicate) {
+									return ((astra.lang.EIS) visitor.agent().getModule("terranSCV","eis")).auto_formula((Predicate) predicate.accept(visitor));
+								}
+							}
+						)
+					),
+					new ModuleCall("C",
+						"terranSCV", new int[] {52,8,52,65},
+						new Predicate("println", new Term[] {
+							Operator.newOperator('+',
+								Primitive.newPrimitive("Building Vespene Refinery at "),
+								Operator.newOperator('+',
+									new Variable(Type.INTEGER, "x"),
+									Operator.newOperator('+',
+										Primitive.newPrimitive(", "),
+										new Variable(Type.INTEGER, "y")
+									)
+								)
+							)
+						}),
+						new DefaultModuleCallAdaptor() {
+							public boolean inline() {
+								return false;
+							}
+
+							public boolean invoke(Intention intention, Predicate predicate) {
+								return ((astra.lang.Console) intention.getModule("terranSCV","C")).println(
 									(java.lang.String) intention.evaluate(predicate.getTerm(0))
 								);
 							}
 						}
 					),
-					new Subgoal(
-						"TerranSCV", new int[] {45,8,46,5},
-						new Goal(
-							new Predicate("gatherMinerals", new Term[] {})
-						)
-					)
-				}
-			)
-		));
-		addRule(new Rule(
-			"TerranSCV", new int[] {48,9,48,57},
-			new GoalEvent('+',
-				new Goal(
-					new Predicate("gatherMinerals", new Term[] {})
-				)
-			),
-			new Predicate("availableMinerals", new Term[] {
-				new Variable(Type.LIST, "L",false)
-			}),
-			new Block(
-				"TerranSCV", new int[] {48,56,51,5},
-				new Statement[] {
-					new Declaration(
-						new Variable(Type.INTEGER, "ID"),
-						"TerranSCV", new int[] {49,8,51,5},
-						new ModuleTerm("P", Type.INTEGER,
-							new Predicate("valueAsInt", new Term[] {
-								new Variable(Type.LIST, "L"),
-								Primitive.newPrimitive(0)
-							}),
-							new ModuleTermAdaptor() {
-								public Object invoke(Intention intention, Predicate predicate) {
-									return ((astra.lang.Prelude) intention.getModule("TerranSCV","P")).valueAsInt(
-										(astra.term.ListTerm) intention.evaluate(predicate.getTerm(0)),
-										(java.lang.Integer) intention.evaluate(predicate.getTerm(1))
-									);
-								}
-								public Object invoke(BindingsEvaluateVisitor visitor, Predicate predicate) {
-									return ((astra.lang.Prelude) visitor.agent().getModule("TerranSCV","P")).valueAsInt(
-										(astra.term.ListTerm) visitor.evaluate(predicate.getTerm(0)),
-										(java.lang.Integer) visitor.evaluate(predicate.getTerm(1))
-									);
-								}
+					new ModuleCall("eis",
+						"terranSCV", new int[] {53,8,53,18},
+						new Predicate("stop", new Term[] {}),
+						new DefaultModuleCallAdaptor() {
+							public boolean inline() {
+								return true;
 							}
-						)
+
+							public boolean invoke(Intention intention, Predicate predicate) {
+								return ((astra.lang.EIS) intention.getModule("terranSCV","eis")).auto_action(intention,evaluate(intention,predicate));
+							}
+						}
 					),
 					new ModuleCall("eis",
-						"TerranSCV", new int[] {50,8,50,22},
-						new Predicate("gather", new Term[] {
-							new Variable(Type.INTEGER, "ID")
+						"terranSCV", new int[] {54,8,54,42},
+						new Predicate("build", new Term[] {
+							Primitive.newPrimitive("Terran Refinery"),
+							new Variable(Type.INTEGER, "x"),
+							new Variable(Type.INTEGER, "y")
 						}),
 						new DefaultModuleCallAdaptor() {
 							public boolean inline() {
@@ -134,163 +278,179 @@ public class TerranSCV extends ASTRAClass {
 							}
 
 							public boolean invoke(Intention intention, Predicate predicate) {
-								return ((astra.lang.EIS) intention.getModule("TerranSCV","eis")).auto_action(intention,evaluate(intention,predicate));
+								return ((astra.lang.EIS) intention.getModule("terranSCV","eis")).auto_action(intention,evaluate(intention,predicate));
 							}
 						}
-					)
-				}
-			)
-		));
-		addRule(new Rule(
-			"TerranSCV", new int[] {53,9,53,29},
-			new GoalEvent('+',
-				new Goal(
-					new Predicate("gatherMinerals", new Term[] {})
-				)
-			),
-			Predicate.TRUE,
-			new Block(
-				"TerranSCV", new int[] {53,28,55,5},
-				new Statement[] {
-					new Subgoal(
-						"TerranSCV", new int[] {54,8,55,5},
-						new Goal(
-							new Predicate("gatherMinerals", new Term[] {})
+					),
+					new Wait(
+						"terranSCV", new int[] {55,8,59,5},
+						new AND(
+							new BracketFormula(
+								new Predicate("conditions", new Term[] {
+									new Variable(Type.LIST, "conds",false)
+								})
+							),
+							new BracketFormula(
+								new NOT(
+									new ModuleFormula("P",
+										new Predicate("contains", new Term[] {
+											new Variable(Type.LIST, "conds"),
+											Primitive.newPrimitive("constructing")
+										}),
+									new ModuleFormulaAdaptor() {
+											public Formula invoke(BindingsEvaluateVisitor visitor, Predicate predicate) {
+												return ((astra.lang.Prelude) visitor.agent().getModule("terranSCV","P")).contains(
+													(astra.term.ListTerm) visitor.evaluate(predicate.getTerm(0)),
+													(java.lang.String) visitor.evaluate(predicate.getTerm(1))
+												);
+										}
+									}
+										)
+								)
+							)
 						)
-					)
-				}
-			)
-		));
-		addRule(new Rule(
-			"TerranSCV", new int[] {57,9,57,55},
-			new GoalEvent('+',
-				new Goal(
-					new Predicate("gatherVespene", new Term[] {})
-				)
-			),
-			new Predicate("availableVespene", new Term[] {
-				new Variable(Type.LIST, "L",false)
-			}),
-			new Block(
-				"TerranSCV", new int[] {57,54,60,5},
-				new Statement[] {
-					new Declaration(
-						new Variable(Type.INTEGER, "ID"),
-						"TerranSCV", new int[] {58,8,60,5},
-						new ModuleTerm("P", Type.INTEGER,
-							new Predicate("valueAsInt", new Term[] {
-								new Variable(Type.LIST, "L"),
-								Primitive.newPrimitive(0)
-							}),
+					),
+					new BeliefUpdate('-',
+						"terranSCV", new int[] {56,8,59,5},
+						new Predicate("busy", new Term[] {
+							Primitive.newPrimitive(true)
+						})
+					),
+					new BeliefUpdate('+',
+						"terranSCV", new int[] {57,8,59,5},
+						new Predicate("busy", new Term[] {
+							Primitive.newPrimitive(false)
+						})
+					),
+					new Send("terranSCV", new int[] {58,8,58,60},
+						new Performative("inform"),
+						new ModuleTerm("S", Type.STRING,
+							new Predicate("getOwner", new Term[] {}),
 							new ModuleTermAdaptor() {
 								public Object invoke(Intention intention, Predicate predicate) {
-									return ((astra.lang.Prelude) intention.getModule("TerranSCV","P")).valueAsInt(
-										(astra.term.ListTerm) intention.evaluate(predicate.getTerm(0)),
-										(java.lang.Integer) intention.evaluate(predicate.getTerm(1))
+									return ((astra.lang.System) intention.getModule("terranSCV","S")).getOwner(
 									);
 								}
 								public Object invoke(BindingsEvaluateVisitor visitor, Predicate predicate) {
-									return ((astra.lang.Prelude) visitor.agent().getModule("TerranSCV","P")).valueAsInt(
-										(astra.term.ListTerm) visitor.evaluate(predicate.getTerm(0)),
-										(java.lang.Integer) visitor.evaluate(predicate.getTerm(1))
+									return ((astra.lang.System) visitor.agent().getModule("terranSCV","S")).getOwner(
 									);
 								}
 							}
-						)
-					),
-					new ModuleCall("eis",
-						"TerranSCV", new int[] {59,8,59,22},
-						new Predicate("gather", new Term[] {
-							new Variable(Type.INTEGER, "ID")
-						}),
-						new DefaultModuleCallAdaptor() {
-							public boolean inline() {
-								return true;
-							}
-
-							public boolean invoke(Intention intention, Predicate predicate) {
-								return ((astra.lang.EIS) intention.getModule("TerranSCV","eis")).auto_action(intention,evaluate(intention,predicate));
-							}
-						}
+						),
+						new Predicate("built", new Term[] {
+							Primitive.newPrimitive("Terran Refinery")
+						})
 					)
 				}
 			)
 		));
 		addRule(new Rule(
-			"TerranSCV", new int[] {62,9,62,122},
+			"terranSCV", new int[] {61,9,61,67},
 			new GoalEvent('+',
 				new Goal(
 					new Predicate("buildStructure", new Term[] {
 						new Variable(Type.STRING, "structure",false),
-						new Variable(Type.STRING, "sender",false)
+						new Variable(Type.INTEGER, "mCost",false),
+						new Variable(Type.INTEGER, "gCost",false)
 					})
 				)
 			),
-			new AND(
-				new Predicate("constructSitesX", new Term[] {
-					new Variable(Type.LIST, "sitesX",false)
-				}),
-				new Predicate("constructSitesY", new Term[] {
-					new Variable(Type.LIST, "sitesY",false)
-				})
-			),
+			Predicate.TRUE,
 			new Block(
-				"TerranSCV", new int[] {62,121,73,5},
+				"terranSCV", new int[] {61,66,75,5},
 				new Statement[] {
-					new Declaration(
-						new Variable(Type.INTEGER, "x"),
-						"TerranSCV", new int[] {63,8,73,5},
-						new ModuleTerm("P", Type.INTEGER,
-							new Predicate("headAsInt", new Term[] {
-								new Variable(Type.LIST, "sitesX")
+					new Wait(
+						"terranSCV", new int[] {62,8,75,5},
+						new AND(
+							new BracketFormula(
+								new Predicate("minerals", new Term[] {
+									new Variable(Type.INTEGER, "m",false)
+								})
+							),
+							new AND(
+								new BracketFormula(
+									new Comparison(">=",
+										new Variable(Type.INTEGER, "m"),
+										new Variable(Type.INTEGER, "mCost")
+									)
+								),
+								new AND(
+									new BracketFormula(
+										new Predicate("vespeneGas", new Term[] {
+											new Variable(Type.INTEGER, "g",false)
+										})
+									),
+									new BracketFormula(
+										new Comparison(">=",
+											new Variable(Type.INTEGER, "g"),
+											new Variable(Type.INTEGER, "gCost")
+										)
+									)
+								)
+							)
+						)
+					),
+					new Query(
+						"terranSCV", new int[] {63,8,63,49},
+						new ModuleFormula("eis",
+							new Predicate("constructionSite", new Term[] {
+								new Variable(Type.INTEGER, "x",false),
+								new Variable(Type.INTEGER, "y",false)
 							}),
-							new ModuleTermAdaptor() {
-								public Object invoke(Intention intention, Predicate predicate) {
-									return ((astra.lang.Prelude) intention.getModule("TerranSCV","P")).headAsInt(
-										(astra.term.ListTerm) intention.evaluate(predicate.getTerm(0))
-									);
-								}
-								public Object invoke(BindingsEvaluateVisitor visitor, Predicate predicate) {
-									return ((astra.lang.Prelude) visitor.agent().getModule("TerranSCV","P")).headAsInt(
-										(astra.term.ListTerm) visitor.evaluate(predicate.getTerm(0))
-									);
+							new ModuleFormulaAdaptor() {
+								public Formula invoke(BindingsEvaluateVisitor visitor, Predicate predicate) {
+									return ((astra.lang.EIS) visitor.agent().getModule("terranSCV","eis")).auto_formula((Predicate) predicate.accept(visitor));
 								}
 							}
 						)
 					),
-					new Declaration(
-						new Variable(Type.INTEGER, "y"),
-						"TerranSCV", new int[] {64,8,73,5},
-						new ModuleTerm("P", Type.INTEGER,
-							new Predicate("headAsInt", new Term[] {
-								new Variable(Type.LIST, "sitesY")
-							}),
-							new ModuleTermAdaptor() {
-								public Object invoke(Intention intention, Predicate predicate) {
-									return ((astra.lang.Prelude) intention.getModule("TerranSCV","P")).headAsInt(
-										(astra.term.ListTerm) intention.evaluate(predicate.getTerm(0))
-									);
-								}
-								public Object invoke(BindingsEvaluateVisitor visitor, Predicate predicate) {
-									return ((astra.lang.Prelude) visitor.agent().getModule("TerranSCV","P")).headAsInt(
-										(astra.term.ListTerm) visitor.evaluate(predicate.getTerm(0))
-									);
-								}
+					new ModuleCall("C",
+						"terranSCV", new int[] {64,8,64,66},
+						new Predicate("println", new Term[] {
+							Operator.newOperator('+',
+								Primitive.newPrimitive("Building "),
+								Operator.newOperator('+',
+									new Variable(Type.STRING, "structure"),
+									Operator.newOperator('+',
+										Primitive.newPrimitive(" at "),
+										Operator.newOperator('+',
+											new Variable(Type.INTEGER, "x"),
+											Operator.newOperator('+',
+												Primitive.newPrimitive(", "),
+												new Variable(Type.INTEGER, "y")
+											)
+										)
+									)
+								)
+							)
+						}),
+						new DefaultModuleCallAdaptor() {
+							public boolean inline() {
+								return false;
 							}
-						)
-					),
-					new Declaration(
-						new Variable(Type.LIST, "newX"),
-						"TerranSCV", new int[] {65,8,73,5},
-						new Variable(Type.LIST, "sitesX")
-					),
-					new Declaration(
-						new Variable(Type.LIST, "newY"),
-						"TerranSCV", new int[] {66,8,73,5},
-						new Variable(Type.LIST, "sitesY")
+
+							public boolean invoke(Intention intention, Predicate predicate) {
+								return ((astra.lang.Console) intention.getModule("terranSCV","C")).println(
+									(java.lang.String) intention.evaluate(predicate.getTerm(0))
+								);
+							}
+						}
 					),
 					new ModuleCall("eis",
-						"TerranSCV", new int[] {67,8,67,34},
+						"terranSCV", new int[] {65,8,65,18},
+						new Predicate("stop", new Term[] {}),
+						new DefaultModuleCallAdaptor() {
+							public boolean inline() {
+								return true;
+							}
+
+							public boolean invoke(Intention intention, Predicate predicate) {
+								return ((astra.lang.EIS) intention.getModule("terranSCV","eis")).auto_action(intention,evaluate(intention,predicate));
+							}
+						}
+					),
+					new ModuleCall("eis",
+						"terranSCV", new int[] {66,8,66,34},
 						new Predicate("build", new Term[] {
 							new Variable(Type.STRING, "structure"),
 							new Variable(Type.INTEGER, "x"),
@@ -302,37 +462,40 @@ public class TerranSCV extends ASTRAClass {
 							}
 
 							public boolean invoke(Intention intention, Predicate predicate) {
-								return ((astra.lang.EIS) intention.getModule("TerranSCV","eis")).auto_action(intention,evaluate(intention,predicate));
-							}
-						}
-					),
-					new ModuleCall("C",
-						"TerranSCV", new int[] {68,8,68,32},
-						new Predicate("println", new Term[] {
-							Primitive.newPrimitive("Before wait")
-						}),
-						new DefaultModuleCallAdaptor() {
-							public boolean inline() {
-								return false;
-							}
-
-							public boolean invoke(Intention intention, Predicate predicate) {
-								return ((astra.lang.Console) intention.getModule("TerranSCV","C")).println(
-									(java.lang.String) intention.evaluate(predicate.getTerm(0))
-								);
+								return ((astra.lang.EIS) intention.getModule("terranSCV","eis")).auto_action(intention,evaluate(intention,predicate));
 							}
 						}
 					),
 					new Wait(
-						"TerranSCV", new int[] {69,8,73,5},
-						new Predicate("constructing", new Term[] {
-							Primitive.newPrimitive(false)
-						})
+						"terranSCV", new int[] {67,8,75,5},
+						new AND(
+							new BracketFormula(
+								new Predicate("conditions", new Term[] {
+									new Variable(Type.LIST, "conds1",false)
+								})
+							),
+							new BracketFormula(
+								new ModuleFormula("P",
+									new Predicate("contains", new Term[] {
+										new Variable(Type.LIST, "conds1"),
+										Primitive.newPrimitive("constructing")
+									}),
+								new ModuleFormulaAdaptor() {
+										public Formula invoke(BindingsEvaluateVisitor visitor, Predicate predicate) {
+											return ((astra.lang.Prelude) visitor.agent().getModule("terranSCV","P")).contains(
+												(astra.term.ListTerm) visitor.evaluate(predicate.getTerm(0)),
+												(java.lang.String) visitor.evaluate(predicate.getTerm(1))
+											);
+									}
+								}
+									)
+							)
+						)
 					),
 					new ModuleCall("C",
-						"TerranSCV", new int[] {70,8,70,31},
+						"terranSCV", new int[] {68,8,68,32},
 						new Predicate("println", new Term[] {
-							Primitive.newPrimitive("After wait")
+							Primitive.newPrimitive("building...")
 						}),
 						new DefaultModuleCallAdaptor() {
 							public boolean inline() {
@@ -340,66 +503,63 @@ public class TerranSCV extends ASTRAClass {
 							}
 
 							public boolean invoke(Intention intention, Predicate predicate) {
-								return ((astra.lang.Console) intention.getModule("TerranSCV","C")).println(
+								return ((astra.lang.Console) intention.getModule("terranSCV","C")).println(
 									(java.lang.String) intention.evaluate(predicate.getTerm(0))
 								);
 							}
 						}
 					),
-					new Send("TerranSCV", new int[] {71,8,71,59},
+					new Send("terranSCV", new int[] {69,8,69,55},
 						new Performative("inform"),
-						new Variable(Type.STRING, "sender"),
-						new Predicate("content", new Term[] {
-							Primitive.newPrimitive("Supply Depot Built")
+						new ModuleTerm("S", Type.STRING,
+							new Predicate("getOwner", new Term[] {}),
+							new ModuleTermAdaptor() {
+								public Object invoke(Intention intention, Predicate predicate) {
+									return ((astra.lang.System) intention.getModule("terranSCV","S")).getOwner(
+									);
+								}
+								public Object invoke(BindingsEvaluateVisitor visitor, Predicate predicate) {
+									return ((astra.lang.System) visitor.agent().getModule("terranSCV","S")).getOwner(
+									);
+								}
+							}
+						),
+						new Predicate("building", new Term[] {
+							new Variable(Type.STRING, "structure")
 						})
 					),
-					new Subgoal(
-						"TerranSCV", new int[] {72,8,73,5},
-						new Goal(
-							new Predicate("gatherMinerals", new Term[] {})
+					new Wait(
+						"terranSCV", new int[] {70,8,75,5},
+						new AND(
+							new BracketFormula(
+								new Predicate("conditions", new Term[] {
+									new Variable(Type.LIST, "conds2",false)
+								})
+							),
+							new BracketFormula(
+								new NOT(
+									new ModuleFormula("P",
+										new Predicate("contains", new Term[] {
+											new Variable(Type.LIST, "conds2"),
+											Primitive.newPrimitive("constructing")
+										}),
+									new ModuleFormulaAdaptor() {
+											public Formula invoke(BindingsEvaluateVisitor visitor, Predicate predicate) {
+												return ((astra.lang.Prelude) visitor.agent().getModule("terranSCV","P")).contains(
+													(astra.term.ListTerm) visitor.evaluate(predicate.getTerm(0)),
+													(java.lang.String) visitor.evaluate(predicate.getTerm(1))
+												);
+										}
+									}
+										)
+								)
+							)
 						)
-					)
-				}
-			)
-		));
-		addRule(new Rule(
-			"TerranSCV", new int[] {75,9,75,115},
-			new ModuleEvent("eis",
-				"$eis",
-				new Predicate("event", new Term[] {
-					new Funct("mineralField", new Term[] {
-						new Variable(Type.INTEGER, "ID",false),
-						new Variable(Type.INTEGER, "resources",false),
-						new Variable(Type.INTEGER, "group",false),
-						new Variable(Type.INTEGER, "x",false),
-						new Variable(Type.INTEGER, "y",false)
-					})
-				}),
-				new ModuleEventAdaptor() {
-					public Event generate(astra.core.Agent agent, Predicate predicate) {
-						return ((astra.lang.EIS) agent.getModule("TerranSCV","eis")).event(
-							"+",
-							predicate.getTerm(0)
-						);
-					}
-				}
-			),
-			new Predicate("availableMinerals", new Term[] {
-				new Variable(Type.LIST, "prev",false)
-			}),
-			new Block(
-				"TerranSCV", new int[] {75,114,80,5},
-				new Statement[] {
-					new Declaration(
-						new Variable(Type.LIST, "new"),
-						"TerranSCV", new int[] {76,8,80,5},
-						new Variable(Type.LIST, "prev")
 					),
-					new ModuleCall("P",
-						"TerranSCV", new int[] {77,8,77,22},
-						new Predicate("add", new Term[] {
-							new Variable(Type.LIST, "new"),
-							new Variable(Type.INTEGER, "ID")
+					new ModuleCall("C",
+						"terranSCV", new int[] {71,8,71,27},
+						new Predicate("println", new Term[] {
+							Primitive.newPrimitive("built!")
 						}),
 						new DefaultModuleCallAdaptor() {
 							public boolean inline() {
@@ -407,202 +567,50 @@ public class TerranSCV extends ASTRAClass {
 							}
 
 							public boolean invoke(Intention intention, Predicate predicate) {
-								return ((astra.lang.Prelude) intention.getModule("TerranSCV","P")).add(
-									(astra.term.ListTerm) intention.evaluate(predicate.getTerm(0)),
-									(java.lang.Integer) intention.evaluate(predicate.getTerm(1))
+								return ((astra.lang.Console) intention.getModule("terranSCV","C")).println(
+									(java.lang.String) intention.evaluate(predicate.getTerm(0))
 								);
 							}
 						}
 					),
 					new BeliefUpdate('-',
-						"TerranSCV", new int[] {78,8,80,5},
-						new Predicate("availableMinerals", new Term[] {
-							new Variable(Type.LIST, "prev")
+						"terranSCV", new int[] {72,8,75,5},
+						new Predicate("busy", new Term[] {
+							Primitive.newPrimitive(true)
 						})
 					),
 					new BeliefUpdate('+',
-						"TerranSCV", new int[] {79,8,80,5},
-						new Predicate("availableMinerals", new Term[] {
-							new Variable(Type.LIST, "new")
+						"terranSCV", new int[] {73,8,75,5},
+						new Predicate("busy", new Term[] {
+							Primitive.newPrimitive(false)
+						})
+					),
+					new Send("terranSCV", new int[] {74,8,74,54},
+						new Performative("inform"),
+						new ModuleTerm("S", Type.STRING,
+							new Predicate("getOwner", new Term[] {}),
+							new ModuleTermAdaptor() {
+								public Object invoke(Intention intention, Predicate predicate) {
+									return ((astra.lang.System) intention.getModule("terranSCV","S")).getOwner(
+									);
+								}
+								public Object invoke(BindingsEvaluateVisitor visitor, Predicate predicate) {
+									return ((astra.lang.System) visitor.agent().getModule("terranSCV","S")).getOwner(
+									);
+								}
+							}
+						),
+						new Predicate("built", new Term[] {
+							new Brackets(
+								new Variable(Type.STRING, "structure")
+							)
 						})
 					)
 				}
 			)
 		));
 		addRule(new Rule(
-			"TerranSCV", new int[] {82,9,82,115},
-			new ModuleEvent("eis",
-				"$eis",
-				new Predicate("event", new Term[] {
-					new Funct("vespeneGeyser", new Term[] {
-						new Variable(Type.INTEGER, "ID",false),
-						new Variable(Type.INTEGER, "resources",false),
-						new Variable(Type.INTEGER, "group",false),
-						new Variable(Type.INTEGER, "x",false),
-						new Variable(Type.INTEGER, "y",false)
-					})
-				}),
-				new ModuleEventAdaptor() {
-					public Event generate(astra.core.Agent agent, Predicate predicate) {
-						return ((astra.lang.EIS) agent.getModule("TerranSCV","eis")).event(
-							"+",
-							predicate.getTerm(0)
-						);
-					}
-				}
-			),
-			new Predicate("availableVespene", new Term[] {
-				new Variable(Type.LIST, "prev",false)
-			}),
-			new Block(
-				"TerranSCV", new int[] {82,114,87,5},
-				new Statement[] {
-					new Declaration(
-						new Variable(Type.LIST, "new"),
-						"TerranSCV", new int[] {83,8,87,5},
-						new Variable(Type.LIST, "prev")
-					),
-					new ModuleCall("P",
-						"TerranSCV", new int[] {84,8,84,22},
-						new Predicate("add", new Term[] {
-							new Variable(Type.LIST, "new"),
-							new Variable(Type.INTEGER, "ID")
-						}),
-						new DefaultModuleCallAdaptor() {
-							public boolean inline() {
-								return false;
-							}
-
-							public boolean invoke(Intention intention, Predicate predicate) {
-								return ((astra.lang.Prelude) intention.getModule("TerranSCV","P")).add(
-									(astra.term.ListTerm) intention.evaluate(predicate.getTerm(0)),
-									(java.lang.Integer) intention.evaluate(predicate.getTerm(1))
-								);
-							}
-						}
-					),
-					new BeliefUpdate('-',
-						"TerranSCV", new int[] {85,8,87,5},
-						new Predicate("availableVespene", new Term[] {
-							new Variable(Type.LIST, "prev")
-						})
-					),
-					new BeliefUpdate('+',
-						"TerranSCV", new int[] {86,8,87,5},
-						new Predicate("availableVespene", new Term[] {
-							new Variable(Type.LIST, "new")
-						})
-					)
-				}
-			)
-		));
-		addRule(new Rule(
-			"TerranSCV", new int[] {89,9,89,114},
-			new ModuleEvent("eis",
-				"$eis",
-				new Predicate("event", new Term[] {
-					new Funct("constructionSite", new Term[] {
-						new Variable(Type.INTEGER, "x",false),
-						new Variable(Type.INTEGER, "y",false)
-					})
-				}),
-				new ModuleEventAdaptor() {
-					public Event generate(astra.core.Agent agent, Predicate predicate) {
-						return ((astra.lang.EIS) agent.getModule("TerranSCV","eis")).event(
-							"+",
-							predicate.getTerm(0)
-						);
-					}
-				}
-			),
-			new AND(
-				new Predicate("constructSitesX", new Term[] {
-					new Variable(Type.LIST, "prevX",false)
-				}),
-				new Predicate("constructSitesY", new Term[] {
-					new Variable(Type.LIST, "prevY",false)
-				})
-			),
-			new Block(
-				"TerranSCV", new int[] {89,113,98,5},
-				new Statement[] {
-					new Declaration(
-						new Variable(Type.LIST, "newX"),
-						"TerranSCV", new int[] {90,8,98,5},
-						new Variable(Type.LIST, "prevX")
-					),
-					new Declaration(
-						new Variable(Type.LIST, "newY"),
-						"TerranSCV", new int[] {91,8,98,5},
-						new Variable(Type.LIST, "prevY")
-					),
-					new ModuleCall("P",
-						"TerranSCV", new int[] {92,8,92,22},
-						new Predicate("add", new Term[] {
-							new Variable(Type.LIST, "newX"),
-							new Variable(Type.INTEGER, "x")
-						}),
-						new DefaultModuleCallAdaptor() {
-							public boolean inline() {
-								return false;
-							}
-
-							public boolean invoke(Intention intention, Predicate predicate) {
-								return ((astra.lang.Prelude) intention.getModule("TerranSCV","P")).add(
-									(astra.term.ListTerm) intention.evaluate(predicate.getTerm(0)),
-									(java.lang.Integer) intention.evaluate(predicate.getTerm(1))
-								);
-							}
-						}
-					),
-					new ModuleCall("P",
-						"TerranSCV", new int[] {93,8,93,22},
-						new Predicate("add", new Term[] {
-							new Variable(Type.LIST, "newY"),
-							new Variable(Type.INTEGER, "y")
-						}),
-						new DefaultModuleCallAdaptor() {
-							public boolean inline() {
-								return false;
-							}
-
-							public boolean invoke(Intention intention, Predicate predicate) {
-								return ((astra.lang.Prelude) intention.getModule("TerranSCV","P")).add(
-									(astra.term.ListTerm) intention.evaluate(predicate.getTerm(0)),
-									(java.lang.Integer) intention.evaluate(predicate.getTerm(1))
-								);
-							}
-						}
-					),
-					new BeliefUpdate('-',
-						"TerranSCV", new int[] {94,8,98,5},
-						new Predicate("constructSitesX", new Term[] {
-							new Variable(Type.LIST, "prevX")
-						})
-					),
-					new BeliefUpdate('+',
-						"TerranSCV", new int[] {95,8,98,5},
-						new Predicate("constructSitesX", new Term[] {
-							new Variable(Type.LIST, "newX")
-						})
-					),
-					new BeliefUpdate('-',
-						"TerranSCV", new int[] {96,8,98,5},
-						new Predicate("constructSitesY", new Term[] {
-							new Variable(Type.LIST, "prevY")
-						})
-					),
-					new BeliefUpdate('+',
-						"TerranSCV", new int[] {97,8,98,5},
-						new Predicate("constructSitesY", new Term[] {
-							new Variable(Type.LIST, "newY")
-						})
-					)
-				}
-			)
-		));
-		addRule(new Rule(
-			"TerranSCV", new int[] {100,9,100,134},
+			"terranSCV", new int[] {77,9,77,147},
 			new ModuleEvent("eis",
 				"$eis",
 				new Predicate("event", new Term[] {
@@ -617,203 +625,296 @@ public class TerranSCV extends ASTRAClass {
 				}),
 				new ModuleEventAdaptor() {
 					public Event generate(astra.core.Agent agent, Predicate predicate) {
-						return ((astra.lang.EIS) agent.getModule("TerranSCV","eis")).event(
+						return ((astra.lang.EIS) agent.getModule("terranSCV","eis")).event(
 							"+",
 							predicate.getTerm(0)
 						);
 					}
 				}
 			),
-			new Predicate("constructing", new Term[] {
-				new Variable(Type.BOOLEAN, "constructing",false)
-			}),
+			new AND(
+				new Predicate("conditions", new Term[] {
+					new Variable(Type.LIST, "prevConds",false)
+				}),
+				new Predicate("busy", new Term[] {
+					new Variable(Type.BOOLEAN, "busy",false)
+				})
+			),
 			new Block(
-				"TerranSCV", new int[] {100,133,118,5},
+				"terranSCV", new int[] {77,146,84,5},
 				new Statement[] {
-					new Declaration(
-						new Variable(Type.BOOLEAN, "flag"),
-						"TerranSCV", new int[] {101,8,118,5},
-						Primitive.newPrimitive(false)
+					new BeliefUpdate('-',
+						"terranSCV", new int[] {78,8,84,5},
+						new Predicate("conditions", new Term[] {
+							new Variable(Type.LIST, "prevConds")
+						})
 					),
-					new ForAll(
-						"TerranSCV", new int[] {102,8,102,45},
-						new Variable(Type.STRING, "condition",false),
-						new Variable(Type.LIST, "conditions"),
-						new Block(
-							"TerranSCV", new int[] {102,46,118,5},
-							new Statement[] {
-								new If(
-									"TerranSCV", new int[] {103,12,106,9},
-									new Comparison("==",
-										new Variable(Type.STRING, "condition"),
-										Primitive.newPrimitive("constructing")
-									),
-									new Block(
-										"TerranSCV", new int[] {103,44,105,13},
-										new Statement[] {
-											new Assignment(
-												new Variable(Type.BOOLEAN, "flag"),
-												"TerranSCV", new int[] {104,16,105,13},
-												Primitive.newPrimitive(true)
-											)
-										}
-									)
-								)
-							}
-						)
+					new BeliefUpdate('+',
+						"terranSCV", new int[] {79,8,84,5},
+						new Predicate("conditions", new Term[] {
+							new Variable(Type.LIST, "conditions")
+						})
 					),
 					new If(
-						"TerranSCV", new int[] {108,8,118,5},
+						"terranSCV", new int[] {81,8,84,5},
 						new AND(
+							new ModuleFormula("P",
+								new Predicate("contains", new Term[] {
+									new Variable(Type.LIST, "conditions"),
+									Primitive.newPrimitive("idle")
+								}),
+							new ModuleFormulaAdaptor() {
+									public Formula invoke(BindingsEvaluateVisitor visitor, Predicate predicate) {
+										return ((astra.lang.Prelude) visitor.agent().getModule("terranSCV","P")).contains(
+											(astra.term.ListTerm) visitor.evaluate(predicate.getTerm(0)),
+											(java.lang.String) visitor.evaluate(predicate.getTerm(1))
+										);
+								}
+							}
+								),
 							new BracketFormula(
 								new Comparison("==",
-									new Variable(Type.BOOLEAN, "flag"),
-									Primitive.newPrimitive(true)
-								)
-							),
-							new BracketFormula(
-								new Comparison("==",
-									new Variable(Type.BOOLEAN, "constructing"),
+									new Variable(Type.BOOLEAN, "busy"),
 									Primitive.newPrimitive(false)
 								)
 							)
 						),
 						new Block(
-							"TerranSCV", new int[] {108,53,112,9},
+							"terranSCV", new int[] {81,61,83,9},
 							new Statement[] {
-								new BeliefUpdate('-',
-									"TerranSCV", new int[] {109,12,112,9},
-									new Predicate("constructing", new Term[] {
-										Primitive.newPrimitive(false)
-									})
-								),
-								new BeliefUpdate('+',
-									"TerranSCV", new int[] {110,12,112,9},
-									new Predicate("constructing", new Term[] {
-										Primitive.newPrimitive(true)
-									})
-								),
-								new ModuleCall("C",
-									"TerranSCV", new int[] {111,12,111,43},
-									new Predicate("println", new Term[] {
-										Primitive.newPrimitive("Construction begun")
-									}),
-									new DefaultModuleCallAdaptor() {
-										public boolean inline() {
-											return false;
-										}
-
-										public boolean invoke(Intention intention, Predicate predicate) {
-											return ((astra.lang.Console) intention.getModule("TerranSCV","C")).println(
-												(java.lang.String) intention.evaluate(predicate.getTerm(0))
-											);
-										}
-									}
+								new Subgoal(
+									"terranSCV", new int[] {82,12,83,9},
+									new Goal(
+										new Predicate("gatherMinerals", new Term[] {})
+									)
 								)
 							}
-						),
-						new If(
-							"TerranSCV", new int[] {113,13,118,5},
-							new AND(
-								new BracketFormula(
-									new Comparison("==",
-										new Variable(Type.BOOLEAN, "flag"),
-										Primitive.newPrimitive(false)
-									)
-								),
-								new BracketFormula(
-									new Comparison("==",
-										new Variable(Type.BOOLEAN, "constructing"),
-										Primitive.newPrimitive(true)
-									)
-								)
-							),
-							new Block(
-								"TerranSCV", new int[] {113,59,117,9},
-								new Statement[] {
-									new BeliefUpdate('-',
-										"TerranSCV", new int[] {114,12,117,9},
-										new Predicate("constructing", new Term[] {
-											Primitive.newPrimitive(true)
-										})
-									),
-									new BeliefUpdate('+',
-										"TerranSCV", new int[] {115,12,117,9},
-										new Predicate("constructing", new Term[] {
-											Primitive.newPrimitive(false)
-										})
-									),
-									new ModuleCall("C",
-										"TerranSCV", new int[] {116,12,116,47},
-										new Predicate("println", new Term[] {
-											Primitive.newPrimitive("Construction completed")
-										}),
-										new DefaultModuleCallAdaptor() {
-											public boolean inline() {
-												return false;
-											}
-
-											public boolean invoke(Intention intention, Predicate predicate) {
-												return ((astra.lang.Console) intention.getModule("TerranSCV","C")).println(
-													(java.lang.String) intention.evaluate(predicate.getTerm(0))
-												);
-											}
-										}
-									)
-								}
-							)
 						)
 					)
 				}
 			)
 		));
 		addRule(new Rule(
-			"TerranSCV", new int[] {120,9,120,67},
+			"terranSCV", new int[] {86,9,86,118},
+			new ModuleEvent("eis",
+				"$eis",
+				new Predicate("event", new Term[] {
+					new Funct("resources", new Term[] {
+						new Variable(Type.INTEGER, "minerals",false),
+						new Variable(Type.INTEGER, "gas",false),
+						new Variable(Type.INTEGER, "CS",false),
+						new Variable(Type.INTEGER, "TS",false)
+					})
+				}),
+				new ModuleEventAdaptor() {
+					public Event generate(astra.core.Agent agent, Predicate predicate) {
+						return ((astra.lang.EIS) agent.getModule("terranSCV","eis")).event(
+							"+",
+							predicate.getTerm(0)
+						);
+					}
+				}
+			),
+			new AND(
+				new Predicate("minerals", new Term[] {
+					new Variable(Type.INTEGER, "prevM",false)
+				}),
+				new Predicate("vespeneGas", new Term[] {
+					new Variable(Type.INTEGER, "prevG",false)
+				})
+			),
+			new Block(
+				"terranSCV", new int[] {86,117,91,5},
+				new Statement[] {
+					new BeliefUpdate('-',
+						"terranSCV", new int[] {87,8,91,5},
+						new Predicate("minerals", new Term[] {
+							new Variable(Type.INTEGER, "prevM")
+						})
+					),
+					new BeliefUpdate('-',
+						"terranSCV", new int[] {88,8,91,5},
+						new Predicate("vespeneGas", new Term[] {
+							new Variable(Type.INTEGER, "prevG")
+						})
+					),
+					new BeliefUpdate('+',
+						"terranSCV", new int[] {89,8,91,5},
+						new Predicate("minerals", new Term[] {
+							new Variable(Type.INTEGER, "minerals")
+						})
+					),
+					new BeliefUpdate('+',
+						"terranSCV", new int[] {90,8,91,5},
+						new Predicate("vespeneGas", new Term[] {
+							new Variable(Type.INTEGER, "gas")
+						})
+					)
+				}
+			)
+		));
+		addRule(new Rule(
+			"terranSCV", new int[] {93,9,93,69},
 			new MessageEvent(
 				new Performative("inform"),
 				new Variable(Type.STRING, "sender",false),
 				new Predicate("content", new Term[] {
-					new Variable(Type.STRING, "content",false)
+					new Variable(Type.STRING, "structure",false)
 				})
 			),
 			Predicate.TRUE,
 			new Block(
-				"TerranSCV", new int[] {120,66,123,5},
+				"terranSCV", new int[] {93,68,104,5},
 				new Statement[] {
-					new ModuleCall("C",
-						"TerranSCV", new int[] {121,8,121,78},
-						new Predicate("println", new Term[] {
-							Operator.newOperator('+',
-								Primitive.newPrimitive("Message received from "),
-								Operator.newOperator('+',
-									new Variable(Type.STRING, "sender"),
-									Operator.newOperator('+',
-										Primitive.newPrimitive(", building "),
-										new Variable(Type.STRING, "content")
-									)
-								)
-							)
-						}),
+					new BeliefUpdate('-',
+						"terranSCV", new int[] {94,8,104,5},
+						new Predicate("busy", new Term[] {
+							Primitive.newPrimitive(false)
+						})
+					),
+					new BeliefUpdate('+',
+						"terranSCV", new int[] {95,8,104,5},
+						new Predicate("busy", new Term[] {
+							Primitive.newPrimitive(true)
+						})
+					),
+					new ModuleCall("eis",
+						"terranSCV", new int[] {96,8,96,18},
+						new Predicate("stop", new Term[] {}),
 						new DefaultModuleCallAdaptor() {
 							public boolean inline() {
-								return false;
+								return true;
 							}
 
 							public boolean invoke(Intention intention, Predicate predicate) {
-								return ((astra.lang.Console) intention.getModule("TerranSCV","C")).println(
-									(java.lang.String) intention.evaluate(predicate.getTerm(0))
-								);
+								return ((astra.lang.EIS) intention.getModule("terranSCV","eis")).auto_action(intention,evaluate(intention,predicate));
 							}
 						}
 					),
-					new Subgoal(
-						"TerranSCV", new int[] {122,8,123,5},
-						new Goal(
-							new Predicate("buildStructure", new Term[] {
-								new Variable(Type.STRING, "content"),
-								new Variable(Type.STRING, "sender")
-							})
+					new If(
+						"terranSCV", new int[] {97,8,104,5},
+						new Comparison("==",
+							new Variable(Type.STRING, "structure"),
+							Primitive.newPrimitive("Terran Refinery")
+						),
+						new Block(
+							"terranSCV", new int[] {97,43,99,9},
+							new Statement[] {
+								new Subgoal(
+									"terranSCV", new int[] {98,12,99,9},
+									new Goal(
+										new Predicate("buildVespeneRefinery", new Term[] {})
+									)
+								)
+							}
+						),
+						new Block(
+							"terranSCV", new int[] {100,13,104,5},
+							new Statement[] {
+								new Declaration(
+									new Variable(Type.LIST, "costs"),
+									"terranSCV", new int[] {101,12,103,9},
+									new ModuleTerm("buildings", Type.LIST,
+										new Predicate("cost", new Term[] {
+											new Variable(Type.STRING, "structure")
+										}),
+										new ModuleTermAdaptor() {
+											public Object invoke(Intention intention, Predicate predicate) {
+												return ((modules.Buildings) intention.getModule("terranSCV","buildings")).cost(
+													(java.lang.String) intention.evaluate(predicate.getTerm(0))
+												);
+											}
+											public Object invoke(BindingsEvaluateVisitor visitor, Predicate predicate) {
+												return ((modules.Buildings) visitor.agent().getModule("terranSCV","buildings")).cost(
+													(java.lang.String) visitor.evaluate(predicate.getTerm(0))
+												);
+											}
+										}
+									)
+								),
+								new Subgoal(
+									"terranSCV", new int[] {102,12,103,9},
+									new Goal(
+										new Predicate("buildStructure", new Term[] {
+											new Variable(Type.STRING, "structure"),
+											new ModuleTerm("P", Type.INTEGER,
+												new Predicate("valueAsInt", new Term[] {
+													new Variable(Type.LIST, "costs"),
+													Primitive.newPrimitive(0)
+												}),
+												new ModuleTermAdaptor() {
+													public Object invoke(Intention intention, Predicate predicate) {
+														return ((astra.lang.Prelude) intention.getModule("terranSCV","P")).valueAsInt(
+															(astra.term.ListTerm) intention.evaluate(predicate.getTerm(0)),
+															(java.lang.Integer) intention.evaluate(predicate.getTerm(1))
+														);
+													}
+													public Object invoke(BindingsEvaluateVisitor visitor, Predicate predicate) {
+														return ((astra.lang.Prelude) visitor.agent().getModule("terranSCV","P")).valueAsInt(
+															(astra.term.ListTerm) visitor.evaluate(predicate.getTerm(0)),
+															(java.lang.Integer) visitor.evaluate(predicate.getTerm(1))
+														);
+													}
+												}
+											),
+											new ModuleTerm("P", Type.INTEGER,
+												new Predicate("valueAsInt", new Term[] {
+													new Variable(Type.LIST, "costs"),
+													Primitive.newPrimitive(1)
+												}),
+												new ModuleTermAdaptor() {
+													public Object invoke(Intention intention, Predicate predicate) {
+														return ((astra.lang.Prelude) intention.getModule("terranSCV","P")).valueAsInt(
+															(astra.term.ListTerm) intention.evaluate(predicate.getTerm(0)),
+															(java.lang.Integer) intention.evaluate(predicate.getTerm(1))
+														);
+													}
+													public Object invoke(BindingsEvaluateVisitor visitor, Predicate predicate) {
+														return ((astra.lang.Prelude) visitor.agent().getModule("terranSCV","P")).valueAsInt(
+															(astra.term.ListTerm) visitor.evaluate(predicate.getTerm(0)),
+															(java.lang.Integer) visitor.evaluate(predicate.getTerm(1))
+														);
+													}
+												}
+											)
+										})
+									)
+								)
+							}
 						)
+					)
+				}
+			)
+		));
+		addRule(new Rule(
+			"terranSCV", new int[] {106,9,106,65},
+			new MessageEvent(
+				new Performative("inform"),
+				new Variable(Type.STRING, "sender",false),
+				new Predicate("explore", new Term[] {
+					new Variable(Type.INTEGER, "x",false),
+					new Variable(Type.INTEGER, "y",false)
+				})
+			),
+			Predicate.TRUE,
+			new Block(
+				"terranSCV", new int[] {106,64,108,5},
+				new Statement[] {
+					new ModuleCall("eis",
+						"terranSCV", new int[] {107,8,107,22},
+						new Predicate("move", new Term[] {
+							new Variable(Type.INTEGER, "x"),
+							new Variable(Type.INTEGER, "y")
+						}),
+						new DefaultModuleCallAdaptor() {
+							public boolean inline() {
+								return true;
+							}
+
+							public boolean invoke(Intention intention, Predicate predicate) {
+								return ((astra.lang.EIS) intention.getModule("terranSCV","eis")).auto_action(intention,evaluate(intention,predicate));
+							}
+						}
 					)
 				}
 			)
@@ -823,7 +924,7 @@ public class TerranSCV extends ASTRAClass {
 	public void initialize(astra.core.Agent agent) {
 		agent.addSensorAdaptor(new SensorAdaptor() {
 			public void sense(astra.core.Agent agent) {
-				((astra.lang.EIS) agent.getModule("TerranSCV","eis")).sense();
+				((astra.lang.EIS) agent.getModule("terranSCV","eis")).sense();
 			}
 		});
 
@@ -833,43 +934,25 @@ public class TerranSCV extends ASTRAClass {
 			)
 		);
 		agent.initialize(
-			new Predicate("condition", new Term[] {
-				new ListTerm(new Term[] {
-
-				})
+			new Predicate("minerals", new Term[] {
+				Primitive.newPrimitive(50)
 			})
 		);
 		agent.initialize(
-			new Predicate("availableMinerals", new Term[] {
-				new ListTerm(new Term[] {
-
-				})
+			new Predicate("vespeneGas", new Term[] {
+				Primitive.newPrimitive(0)
 			})
 		);
 		agent.initialize(
-			new Predicate("availableVespene", new Term[] {
-				new ListTerm(new Term[] {
-
-				})
-			})
-		);
-		agent.initialize(
-			new Predicate("constructSitesX", new Term[] {
-				new ListTerm(new Term[] {
-
-				})
-			})
-		);
-		agent.initialize(
-			new Predicate("constructSitesY", new Term[] {
-				new ListTerm(new Term[] {
-
-				})
-			})
-		);
-		agent.initialize(
-			new Predicate("constructing", new Term[] {
+			new Predicate("busy", new Term[] {
 				Primitive.newPrimitive(false)
+			})
+		);
+		agent.initialize(
+			new Predicate("conditions", new Term[] {
+				new ListTerm(new Term[] {
+					Primitive.newPrimitive("idle")
+				})
 			})
 		);
 	}
@@ -879,6 +962,9 @@ public class TerranSCV extends ASTRAClass {
 		fragment.addModule("eis",astra.lang.EIS.class,agent);
 		fragment.addModule("C",astra.lang.Console.class,agent);
 		fragment.addModule("P",astra.lang.Prelude.class,agent);
+		fragment.addModule("S",astra.lang.System.class,agent);
+		fragment.addModule("lists",modules.Lists.class,agent);
+		fragment.addModule("buildings",modules.Buildings.class,agent);
 		return fragment;
 	}
 
@@ -891,7 +977,7 @@ public class TerranSCV extends ASTRAClass {
 
 		String name = java.lang.System.getProperty("astra.name", "main");
 		try {
-			astra.core.Agent agent = new TerranSCV().newInstance(name);
+			astra.core.Agent agent = new terranSCV().newInstance(name);
 			agent.initialize(new Goal(new Predicate("main", new Term[] { argList })));
 			Scheduler.schedule(agent);
 		} catch (AgentCreationException e) {

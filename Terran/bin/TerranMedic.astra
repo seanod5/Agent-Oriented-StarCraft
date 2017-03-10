@@ -1,5 +1,0 @@
-agent TerranMedic {
-	rule +!main(list args) {
-		// TODO: Write code here
-	}
-}

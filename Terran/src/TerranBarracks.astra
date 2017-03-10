@@ -1,5 +1,52 @@
-agent TerranBarracks {
-	rule +!main(list args) {
-		// TODO: Write code here
+agent terranBarracks {
+	module EIS eis;
+	module Console C;
+	
+	types status {
+		formula queueSize(int);
+	}
+	
+	types resources {
+		formula minerals(int);
+		formula vespeneGas(int);
+		formula currentSupply(int);
+		formula totalSupply(int);
+	}
+	
+	initial !init();
+	initial queueSize(0);
+	
+	rule +!init() {
+		eis.join("starcraft");
+		eis.link();
+		C.println("Barracks online");
+		while(true) {
+			!trainUnit("Terran Marine", 50, 0);
+		}
+	}
+	
+	rule +!trainUnit(string unitType, int mCost, int gCost) : (queueSize(int queue)) & (queue < 5) {
+		//wait((minerals(int m)) & (m >= mCost) & (vespeneGas(int g)) & (g >= gCost));
+		eis.train(unitType);
+	}
+	
+	rule +!trainUnit(string unitType, int mCost, int gCost) {
+		!trainUnit(unitType, mCost, gCost);
+	}
+	
+	rule +$eis.event(resources(int minerals, int gas, int CS, int TS)) : minerals(int prevM) & vespeneGas(int prevG) & currentSupply(int prevCS) & totalSupply(int prevTS) {
+		-minerals(prevM);
+		-vespeneGas(prevG);
+		-currentSupply(prevCS);
+		-totalSupply(prevTS);
+		+minerals(minerals);
+		+vespeneGas(gas);
+		+currentSupply(CS);
+		+totalSupply(TS);
+	}
+		
+	rule +$eis.event(queueSize(int size)) : queueSize(int prevSize) {
+		-queueSize(prevSize);
+		+queueSize(size);
 	}
 }

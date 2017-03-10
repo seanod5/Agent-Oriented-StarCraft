@@ -1,5 +1,46 @@
-agent TerranMarine {
-	rule +!main(list args) {
-		// TODO: Write code here
+agent terranMarine {
+	module EIS eis;
+	module Console C;
+	
+	types status {
+		formula conditions(list);
+		formula location(int, int);
+	}
+	
+	types messaging {
+		formula explore(int, int);
+	}
+	
+	initial !init();
+	
+	rule +!init() {
+		eis.join("starcraft");
+		eis.link();
+		C.println("Marine online.");
+	}
+	
+	rule +!attackUnit(string target) {
+		eis.attack(target);
+	}
+	
+	rule +!attackPosition(int x, int y) {
+		eis.attack(x, y);
+	}
+	
+	rule +$eis.event(status(int health, int shield, int energy, list conditions, int x, int y)) : conditions(list prevConds) & location(int prevX, int prevY) {
+		-conditions(prevConds);
+		+conditions(conditions);
+		-location(prevX, prevY);
+		+location(x, y);
+	}
+	
+	rule +$eis.event(unit(boolean friendly, string type, string ID, int health, int shield, list conditions)) {
+		if(friendly == false) {
+			!attackUnit(ID);
+		}
+	}
+	
+	rule @message(inform, string sender, explore(int x, int y)) {
+		eis.attack(x, y);
 	}
 }
