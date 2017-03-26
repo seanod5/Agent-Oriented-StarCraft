@@ -1,0 +1,88 @@
+agent buildingManager {
+	module EIS eis;
+	module Console C;
+	module System S;
+	module modules.Prelude2 P;
+	
+	types building {
+		formula buildPending(boolean);
+		formula busyBuilders(list);
+		formula isStart(boolean);
+	}
+	
+	types messaging {
+		formula content(string);
+		formula content(boolean);
+	}
+	
+	initial buildPending(false);
+	initial busyBuilders([]);
+	initial isStart(true);
+	initial !init();
+	
+	rule +!init() {
+		eis.join("starcraft");
+		C.println("Building Manager Online");
+	}
+	
+	rule +!buildBase() : isStart(boolean isStart) {
+		if(isStart == false) {
+			!build("Terran Command Center");
+			C.println("waiting...");
+			wait(buildPending(false));
+		}
+		
+		!build("Terran Supply Depot");
+		C.println("waiting...");
+		wait(buildPending(false));
+		!build("Terran Refinery");
+		C.println("waiting...");
+		wait(buildPending(false));
+		!build("Terran Barracks");
+		C.println("waiting...");
+		wait(buildPending(false));
+		!build("Terran Supply Depot");
+		
+		if(isStart == true) {
+			-isStart(true);
+			+isStart(false);
+		}
+	}
+	
+	rule +!build(string structure) : busyBuilders(list busyBuilders) {
+		-buildPending(false);
+		+buildPending(true);
+		
+		list SCVs = S.getAgentsOfType("terranSCV");
+		string SCV = P.getRandomString(SCVs);
+		while(P.contains(busyBuilders, SCV)) {
+			SCV = P.getRandomString(SCVs);
+		}
+		
+		send(inform, SCV, content(structure));
+		C.println(structure + " request sent to " + SCV);
+		
+		-busyBuilders(busyBuilders);
+		P.add(busyBuilders, SCV);
+		+busyBuilders(busyBuilders);
+	}
+	
+	rule @message(inform, string sender, content(string content)) : busyBuilders(list busyBuilders) {
+		if(content == "Building") {
+//			-buildPending(true);
+//			+buildPending(false);
+		}
+		
+		if(content  == "Done") {
+			-buildPending(true);
+			+buildPending(false);
+			-busyBuilders(busyBuilders);
+			P.remove(busyBuilders, sender);
+			+busyBuilders(busyBuilders);
+		}
+		
+		if(content == "Build Base") {
+			!buildBase();
+		}
+	}
+}

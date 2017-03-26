@@ -1,27 +1,19 @@
 agent test {
-	module modules.SupplyDepot SD;
 	module modules.Strings strings;
-	module modules.Lists lists;
+	module modules.Prelude2 P;
 	module Math math;
 	module Console C;
-	module Prelude P;
 	module System S;
 	
 	types shit {
-		formula hey(int);
-		formula ho(boolean);
+		formula array(list);
 	}
 	
-	initial hey(1);
-	initial ho(false);
+	initial array([1]);
 	
 	rule +!main(list args) {
-		C.println("Start...");
-		boolean check = query(hey(2));
-		C.println(check);
-		if(check == true) {
-			C.println("hey");
-		}
-		S.exit();
+		list array = [1];
+		P.add(array, 2);
+		C.println(array);
 	}
 }

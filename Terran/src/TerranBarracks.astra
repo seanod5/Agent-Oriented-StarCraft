@@ -1,9 +1,15 @@
 agent terranBarracks {
 	module EIS eis;
 	module Console C;
+	module System S;
 	
 	types status {
 		formula queueSize(int);
+		formula attackOrdered(boolean);
+	}
+	
+	types messaging {
+		formula content(int);
 	}
 	
 	types resources {
@@ -15,6 +21,7 @@ agent terranBarracks {
 	
 	initial !init();
 	initial queueSize(0);
+	initial attackOrdered(false);
 	
 	rule +!init() {
 		eis.join("starcraft");
@@ -48,5 +55,24 @@ agent terranBarracks {
 	rule +$eis.event(queueSize(int size)) : queueSize(int prevSize) {
 		-queueSize(prevSize);
 		+queueSize(size);
+	}
+	
+	rule +$eis.event(unit(boolean isFriendly, string type, int ID, int health, int shield, list condition)) {
+		C.println("woop");
+//		-attackOrdered(false);
+//		+attackOrdered(true);
+//		send(inform, "Combat Manager", content(ID));
+//		C.println("Attack Order sent");
+	}
+	
+//	rule +$eis.event(unit(boolean isFriendly, string type, int ID, int health, int shield, list condition)) : (isFriendly == false) & (attackOrdered(false)) {
+//		-attackOrdered(false);
+//		+attackOrdered(true);
+//		send(inform, "Combat Manager", content(ID));
+//		C.println("Attack Order sent");
+//	}
+	
+	rule +$eis.event(status(int health, int shield, int energy, list conditions, int x, int y)) : health == 0 {
+		S.terminate();
 	}
 }

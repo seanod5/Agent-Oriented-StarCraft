@@ -1,0 +1,37 @@
+agent combatManager {
+	module EIS eis;
+	module Console C;
+	module modules.Prelude2 P;
+	module modules.Entities ent;
+	
+	types messaging {
+		formula content(int);
+		formula attack(int);
+	}
+	
+	initial !init();
+	
+	rule +!init() {
+		eis.join("starcraft");
+		C.println("Combat Manager Online");
+	}
+	
+	rule +!orderAttack(int ID) {
+		list army = [];
+		list allEntities = eis.allEntities();
+		forall(string entity : allEntities) {
+			if(ent.canAttack(eis.getEntityType(entity)) == true) {
+				P.add(army, entity);
+			}
+		}
+		forall(string entity : army) {
+			send(inform, entity, attack(ID));
+		}
+	}
+	
+	rule @message(inform, string sender, content(int ID)) {
+		!orderAttack(ID);
+		C.println("Attack order received");
+	}
+	
+}

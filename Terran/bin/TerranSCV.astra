@@ -1,15 +1,15 @@
 agent terranSCV {
 	module EIS eis;
 	module Console C;
-	module Prelude P;
 	module System S;
-	module modules.Lists lists;
+	module modules.Prelude2 P;
 	module modules.Buildings buildings;
 	
 	types messaging {
 		formula content(string);
 		formula built(string);
 		formula building(string);
+		formula attack(int);
 		formula explore(int, int);
 	}
 	
@@ -17,6 +17,7 @@ agent terranSCV {
 		formula conditions(list);
 		formula busy(boolean);
 		formula idle(boolean);
+		formula exploring(boolean);
 	}
 	
 	types resources {
@@ -29,11 +30,14 @@ agent terranSCV {
 	initial vespeneGas(0);
 	initial busy(false);
 	initial conditions(["idle"]);
+	initial exploring(false);
 	
 	rule +!init() {
 		eis.join("starcraft");
 		eis.link();
 		C.println("SCV online.");
+		query(eis.unit(boolean isFriendly, string type, int ID, int health, int shield, list condition));
+
 	}
 	
 	rule +!gatherMinerals() : busy(boolean busy) & (busy == false) {
@@ -52,10 +56,14 @@ agent terranSCV {
 		C.println("Building Vespene Refinery at " + x + ", " + y);
 		eis.stop();
 		eis.build("Terran Refinery", x, y);
-		wait((conditions(list conds)) & (~P.contains(conds, "constructing")));
+		wait((conditions(list conds1)) & (P.contains(conds1, "constructing")));
+		C.println("building...");
+		send(inform, "Building Manager", content("Building"));
+		wait((conditions(list conds2)) & (~P.contains(conds2, "constructing")));
 		-busy(true);
 		+busy(false);
-		send(inform, S.getOwner(), built("Terran Refinery"));
+		C.println("terranRefinery built!");
+		send(inform, "Building Manager", content("Done"));
 	}
 	
 	rule +!buildStructure(string structure, int mCost, int gCost) {
@@ -66,12 +74,13 @@ agent terranSCV {
 		eis.build(structure, x, y);
 		wait((conditions(list conds1)) & (P.contains(conds1, "constructing")));
 		C.println("building...");
-		send(inform, S.getOwner(), building(structure));
+		send(inform, "Building Manager", content("Building"));
 		wait((conditions(list conds2)) & (~P.contains(conds2, "constructing")));
-		C.println("built!");
 		-busy(true);
 		+busy(false);
-		send(inform, S.getOwner(), built((structure)));
+		C.println(structure + " built!");
+		send(inform, "Building Manager", content("Done"));
+		!gatherMinerals();
 	}
 	
 	rule +$eis.event(status(int health, int shield, int energy, list conditions, int x, int y)) : conditions(list prevConds) & busy(boolean busy) {		
@@ -81,6 +90,10 @@ agent terranSCV {
 		if(P.contains(conditions, "idle") & (busy == false)) {
 			!gatherMinerals();
 		}
+	}
+	
+	rule +$eis.event(status(int health, int shield, int energy, list conditions, int x, int y)) : health == 0 {
+		S.terminate();
 	}
 
 	rule +$eis.event(resources(int minerals, int gas, int CS, int TS)) : minerals(int prevM) & vespeneGas(int prevG) {
@@ -103,7 +116,11 @@ agent terranSCV {
 		}
 	}
 	
-	rule @message(inform, string sender, explore(int x, int y)) {
+	rule @message(inform, "Exploration Manager", explore(int x, int y)) {
 		eis.move(x, y);
+	}
+	
+	rule @message(inform, "Combat Manager", attack(int ID)) : exploring(false) {
+		eis.attack(ID);
 	}
 }

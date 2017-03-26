@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="lib" path="C:/Computer Science/COMP30172 Final Year Project/Agent-Oriented-Starcraft2/astra/astra.jar"/>
 	<classpathentry kind="lib" path="C:/Computer Science/COMP30172 Final Year Project/Agent-Oriented-Starcraft2/astra/cartago.jar"/>
 	<classpathentry kind="lib" path="C:/Computer Science/COMP30172 Final Year Project/Agent-Oriented-Starcraft2/astra/eis-0.5.jar"/>
 	<classpathentry kind="lib" path="C:/Computer Science/COMP30172 Final Year Project/Agent-Oriented-Starcraft2/astra/json-simple-1.1.1.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="C:/Computer Science/COMP30172 Final Year Project/Agent-Oriented-Starcraft2/astra/mas-acre.jar"/>
-	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

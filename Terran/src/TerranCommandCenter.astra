@@ -59,63 +59,34 @@ agent terranCommandCenter {
 		+queueSize(size);
 	}
 	
-	rule +$eis.event(resources(int minerals, int gas, int CS, int TS)) :
-	 minerals(int prevM) & vespeneGas(int prevG) & currentSupply(int prevCS) & totalSupply(int prevTS) & supplyRequest(boolean SR) {
+	rule +$eis.event(resources(int minerals, int gas, int CS, int TS)) : minerals(int prevM) & vespeneGas(int prevG) {
 		-minerals(prevM);
 		-vespeneGas(prevG);
-		-currentSupply(prevCS);
-		-totalSupply(prevTS);
 		+minerals(minerals);
 		+vespeneGas(gas);
-		+currentSupply(CS);
-		+totalSupply(TS);
-		
-		if((CS == TS) & (SR == false)) {
-			-supplyRequest(SR);
-			+supplyRequest(true);
-			C.println("Request sent");
-			send(inform, S.getOwner(), ready("ready"));
-		}
 	}
 	
-//	rule +$eis.event(resources(int minerals, int gas, int CS, CS)) : ~supplyRequest(true) {
-//		+supplyRequest(true);
-//		
-//		query(eis.resources(int m, int g, int cs, int ts));
-//		
-//		C.println("m="+m);
-//		C.println("Request sent");
-//		send(inform, S.getOwner(), ready("ready"));
-//	}
-//	
-//	rule @message(inform, string sender, content("Supply Depot Built")) : supplyRequest(true) {
-//		-supplyRequest(true);
-//	}	
-
-	rule +$eis.event(resources(int minerals, int gas, int CS, int TS)) : minerals(int prevM) & vespeneGas(int prevG) & currentSupply(int prevCS) & totalSupply(int prevTS) & supplyRequest(boolean SR) {
-		-minerals(prevM);
-		-vespeneGas(prevG);
-		-currentSupply(prevCS);
-		-totalSupply(prevTS);
-		+minerals(minerals);
-		+vespeneGas(gas);
-		+currentSupply(CS);
-		+totalSupply(TS);
-		
-		if((CS == TS - 4) & (SR == false)) {
-			-supplyRequest(SR);
-			+supplyRequest(true);
-			C.println("Request sent");
-			send(inform, S.getOwner(), ready("ready"));
-			query(eis.base(int x, int y, boolean isStart, int regionID));
-			send(inform, S.getOwner(), explore(x, y));
-		}
+	rule +$eis.event(resources(int minerals, int gas, int CS, int TS)) : (CS == TS) & (supplyRequest(false)) {
+		-supplyRequest(false);
+		+supplyRequest(true);
+		send(inform, "Building Manager", content("Build Base"));
 	}
 	
-	rule @message(inform, string sender, content(string content)) : supplyRequest(boolean SR) {
-		if((content == "Supply Depot Built") & (SR == true)) {
-			-supplyRequest(SR);
-			+supplyRequest(false);
-		}
-	}	
+	rule +$eis.event(status(int health, int shield, int energy, list conditions, int x, int y)) : health == 0 {
+		S.terminate();
+	}
+	
+	rule @message(inform, "Exploration Manager", content("Send Coords")) {
+		query(eis.base(int x, int y, boolean isStart, int regionID));
+		send(inform, "Exploration Manager", explore(x, y));
+	}
+	
+	//DEBUG BELOW///
+	rule +$eis.event(map(int width, int height)) {
+		C.println(width + ", " + height);
+	}
+	
+	rule +$eis.event(base(int x, int y, boolean isStart, int regionID)) {
+		C.println("bases!");
+	}
 }

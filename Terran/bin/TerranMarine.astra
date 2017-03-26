@@ -1,17 +1,21 @@
 agent terranMarine {
 	module EIS eis;
 	module Console C;
+	module System S;
 	
 	types status {
 		formula conditions(list);
 		formula location(int, int);
+		formula exploring(boolean);
 	}
 	
 	types messaging {
+		formula attack(int);
 		formula explore(int, int);
 	}
 	
 	initial !init();
+	initial exploring(false);
 	
 	rule +!init() {
 		eis.join("starcraft");
@@ -34,13 +38,21 @@ agent terranMarine {
 		+location(x, y);
 	}
 	
+	rule +$eis.event(status(int health, int shield, int energy, list conditions, int x, int y)) : health == 0 {
+		S.terminate();
+	}
+	
 	rule +$eis.event(unit(boolean friendly, string type, string ID, int health, int shield, list conditions)) {
 		if(friendly == false) {
 			!attackUnit(ID);
 		}
 	}
 	
-	rule @message(inform, string sender, explore(int x, int y)) {
+	rule @message(inform, "Exploration Manager", explore(int x, int y)) {
 		eis.attack(x, y);
+	}
+	
+	rule @message(inform, "Combat Manager", attack(int ID)) : exploring(false) {
+		eis.attack(ID);
 	}
 }

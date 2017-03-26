@@ -1,0 +1,75 @@
+agent explorationManager {
+	module EIS eis;
+	module Console C;
+	module System S;
+	module modules.Prelude2 P;
+	module modules.Entities ent;
+	
+	types messaging {
+		formula content(string);
+		formula explore(int, int);
+	}
+	
+	types status {
+		formula busyAgents(list);
+	}
+	
+	initial busyAgents([]);
+	initial !init();
+	
+	rule +!init() {
+		eis.join("starcraft");
+		C.println("Exploration Manager Online");
+	}
+	
+	rule +!explore(int x, int y) : busyAgents(list busyAgents) {
+		list party = [];
+		int i = 0;
+		list SCVs = S.getAgentsOfType("terranSCV");
+		list marines = S.getAgentsOfType("terranMarine");
+		
+		while(i < 1) {
+			string SCV = P.getRandomString(SCVs);
+			if(~P.contains(busyAgents, SCV)) {
+				P.add(party, SCV);
+				i++;
+			}
+		}
+		i = 0;
+		while(i < 5) {
+			string marine = P.getRandomString(marines);
+			if(~P.contains(busyAgents, marine)) {
+				P.add(party, marine);
+				P.remove(marines, marine);
+				i++;
+			}
+		}
+		
+		C.println("Search party: " + party);
+		
+		-busyAgents(busyAgents);
+		forall(string ID : party) {
+			send(inform, ID, explore(x, y));
+			P.add(busyAgents, ID);
+		}
+		+busyAgents(busyAgents);
+		
+		send(inform, "main", content("Party Sent"));
+	}
+	
+	rule +!getCoords() {
+		list commandCenters = S.getAgentsOfType("terranCommandCenter");
+		string recipient = P.getRandomString(commandCenters);
+		send(inform, recipient, content("Send Coords"));
+	}
+	
+	rule @message(inform, "main", content(string content)) {
+		C.println("Explore received");
+//		!getCoords();
+		!explore(0, 0);
+	}
+	
+	rule @message(inform, string sender, explore(int x, int y)) {
+		!explore(x, y);
+	}
+}

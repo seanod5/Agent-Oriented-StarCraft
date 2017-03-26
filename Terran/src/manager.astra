@@ -2,32 +2,21 @@ agent manager {
 	module EIS eis;
 	module Console C;
 	module System S;
-	module Prelude P;
-	module Math M;
+	module modules.Prelude2 P;
+	module modules.Entities ent;
 	module Messaging messaging;
-	module modules.Lists lists;
 	
 	types messaging {
 		formula content(string);
-		formula ready(string);
-		formula built(string);
-		formula building(string);
-		formula explore(int, int);
 	}
 	
-	types checks {
-		formula busySCVs(list);
-		formula buildStarted(boolean);
-		formula partyFormed(boolean);
-		formula newBase(int, int);
+	types status {
+		formula exploreRequest(boolean);
 	}
 	
-	initial busySCVs([]);
-	initial partyFormed(false);
-	initial newBase(0, 0);
+	initial exploreRequest(false);
 	
 	rule +!main(list args) {
-		boolean matchStarted = false;
 		eis.launch("starcraft", "localeisbw-dep.jar");
 		eis.join();
 		eis.init([map(""), own_race("terran"), starcraft_location("C:\\Program Files (x86)\\StarCraft"), debug("true")]);
@@ -36,94 +25,35 @@ agent manager {
 		C.println("Manager linked.");
 		messaging.installService("local", "astra.messaging.LocalMQService");
 		messaging.startService("local");
-		while(matchStarted == false) {
-			if(P.size(eis.freeEntities()) > 0) {
-				matchStarted = true;
-			}
-		}
-		
+		S.createAgent("Building Manager", "buildingManager");
+		//S.createAgent("Combat Manager", "combatManager");
+		S.createAgent("Exploration Manager", "explorationManager");
 		
 		!play();
 	}
 	
-	rule +!play() : partyFormed(boolean partyFormed) & newBase(int x, int y) {
-		list SCVs = S.getAgentsOfType("terranSCV");	//Exploring?
+	rule +!play() : exploreRequest(boolean exploreRequest) {
 		list marines = S.getAgentsOfType("terranMarine");
-		if((P.size(SCVs) >= 5) & (P.size(marines) >= 5) & (partyFormed == false)) {
-			C.println("Forming search party");
-			list party = [];
-			int i = 0;
-			P.add(party, lists.getRandomString(SCVs));
-			while(i < 5) {
-				string marine = lists.getRandomString(marines);
-				P.add(party, marine);
-				lists.remove(marines, marine);
-				i++;
-			}
-			C.println("Search party: " + party);
-			-partyFormed(false);
-			+partyFormed(true);
-		
-			forall(string ID : party) {
-				send(inform, ID, explore(x, y));
-			}
+		if((P.size(marines) > 0) & ((P.size(marines) % 5) == 0) & (exploreRequest == false)) {
+			send(inform, "Exploration Manager", content("ready"));
+			C.println("Explore sent");
+			-exploreRequest(false);
+			+exploreRequest(true);
 		}
-		
 		if(P.size(eis.freeEntities()) > 0) {
 			list freeEntities = eis.freeEntities();
 			
 			forall(string ID : freeEntities) {
-				S.createAgent(ID, eis.getEntityType(ID));	//Class names match entity types.	
+				if(ent.isAgent(eis.getEntityType(ID)) == true) {
+					S.createAgent(ID, eis.getEntityType(ID));	//Class names match entity types.	
+				}
 			}
 		}
 		!play();
 	}
 	
-	rule +!build(string structure) : busySCVs(list busySCVs) {
-		-buildStarted(true);
-		+buildStarted(false);
-		list SCVs = S.getAgentsOfType("terranSCV");
-		string SCV = lists.getRandomString(SCVs);
-		while(P.contains(busySCVs, SCV)) {
-			SCV = lists.getRandomString(SCVs);
-		}
-		send(inform, SCV, content(structure));
-		C.println(structure + " request sent to " + SCV);
-		-busySCVs(busySCVs);
-		P.add(busySCVs, SCV);
-		+busySCVs(busySCVs);
-	}
-	
-	rule +!build(string structure) {	//To avoid failed rules
-		!build(structure);
-	}
-	
-	rule @message(inform, string sender, ready(string ready)) {
-		!build("Terran Supply Depot");
-		C.println("waiting...");
-		wait(buildStarted(true));
-		!build("Terran Refinery");
-		C.println("waiting...");
-		wait(buildStarted(true));
-		!build("Terran Barracks");
-		C.println("waiting...");
-		wait(buildStarted(true));
-		!build("Terran Supply Depot");
-	}
-	
-	rule @message(inform, string sender, built(string structure)) : busySCVs(list busySCVs) {
-		C.println(sender + " message received");
-		-buildStarted(false);
-		+buildStarted(true);
-		-busySCVs(busySCVs);
-		if(P.contains(busySCVs, sender)) {
-			lists.remove(busySCVs, sender);
-		}
-		+busySCVs(busySCVs);
-	}
-	
-	rule @message(inform, string sender, explore(int x, int y)) : newBase(int prevX, int prevY) {
-		-newBase(prevX, prevY);
-		+newBase(x, y);
+	rule @message(inform, "Exploration Manager", content("Party Sent")) {
+		-exploreRequest(true);
+		+exploreRequest(false);
 	}
 }
