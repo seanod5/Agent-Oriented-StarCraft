@@ -19,7 +19,7 @@ public class terranCommandCenter extends ASTRAClass {
 	public terranCommandCenter() {
 		setParents(new Class[] {astra.lang.Agent.class});
 		addRule(new Rule(
-			"terranCommandCenter", new int[] {38,9,38,19},
+			"terranCommandCenter", new int[] {39,9,39,19},
 			new GoalEvent('+',
 				new Goal(
 					new Predicate("init", new Term[] {})
@@ -27,10 +27,10 @@ public class terranCommandCenter extends ASTRAClass {
 			),
 			Predicate.TRUE,
 			new Block(
-				"terranCommandCenter", new int[] {38,18,47,5},
+				"terranCommandCenter", new int[] {39,18,48,5},
 				new Statement[] {
 					new ModuleCall("eis",
-						"terranCommandCenter", new int[] {39,8,39,29},
+						"terranCommandCenter", new int[] {40,8,40,29},
 						new Predicate("join", new Term[] {
 							Primitive.newPrimitive("starcraft")
 						}),
@@ -47,7 +47,7 @@ public class terranCommandCenter extends ASTRAClass {
 						}
 					),
 					new ModuleCall("eis",
-						"terranCommandCenter", new int[] {40,8,40,18},
+						"terranCommandCenter", new int[] {41,8,41,18},
 						new Predicate("link", new Term[] {}),
 						new DefaultModuleCallAdaptor() {
 							public boolean inline() {
@@ -61,7 +61,7 @@ public class terranCommandCenter extends ASTRAClass {
 						}
 					),
 					new ModuleCall("C",
-						"terranCommandCenter", new int[] {41,8,41,43},
+						"terranCommandCenter", new int[] {42,8,42,43},
 						new Predicate("println", new Term[] {
 							Primitive.newPrimitive("Command Center online.")
 						}),
@@ -79,27 +79,27 @@ public class terranCommandCenter extends ASTRAClass {
 					),
 					new Declaration(
 						new Variable(Type.INTEGER, "i"),
-						"terranCommandCenter", new int[] {42,8,47,5},
+						"terranCommandCenter", new int[] {43,8,48,5},
 						Primitive.newPrimitive(0)
 					),
 					new While(
-						"terranCommandCenter", new int[] {43,8,47,5},
+						"terranCommandCenter", new int[] {44,8,48,5},
 						new Comparison("<",
 							new Variable(Type.INTEGER, "i"),
 							Primitive.newPrimitive(6)
 						),
 						new Block(
-							"terranCommandCenter", new int[] {43,20,46,9},
+							"terranCommandCenter", new int[] {44,20,47,9},
 							new Statement[] {
 								new Subgoal(
-									"terranCommandCenter", new int[] {44,12,46,9},
+									"terranCommandCenter", new int[] {45,12,47,9},
 									new Goal(
 										new Predicate("trainSCV", new Term[] {})
 									)
 								),
 								new PlusPlus(
 									new Variable(Type.INTEGER, "i"),
-									"terranCommandCenter", new int[] {45,12,45,15}
+									"terranCommandCenter", new int[] {46,12,46,15}
 								)
 							}
 						)
@@ -108,7 +108,7 @@ public class terranCommandCenter extends ASTRAClass {
 			)
 		));
 		addRule(new Rule(
-			"terranCommandCenter", new int[] {49,9,49,168},
+			"terranCommandCenter", new int[] {50,9,50,168},
 			new GoalEvent('+',
 				new Goal(
 					new Predicate("trainSCV", new Term[] {})
@@ -157,10 +157,10 @@ public class terranCommandCenter extends ASTRAClass {
 				)
 			),
 			new Block(
-				"terranCommandCenter", new int[] {49,167,51,5},
+				"terranCommandCenter", new int[] {50,167,52,5},
 				new Statement[] {
 					new ModuleCall("eis",
-						"terranCommandCenter", new int[] {50,8,50,31},
+						"terranCommandCenter", new int[] {51,8,51,31},
 						new Predicate("train", new Term[] {
 							Primitive.newPrimitive("Terran SCV")
 						}),
@@ -178,7 +178,7 @@ public class terranCommandCenter extends ASTRAClass {
 			)
 		));
 		addRule(new Rule(
-			"terranCommandCenter", new int[] {53,9,53,23},
+			"terranCommandCenter", new int[] {54,9,54,23},
 			new GoalEvent('+',
 				new Goal(
 					new Predicate("trainSCV", new Term[] {})
@@ -186,10 +186,10 @@ public class terranCommandCenter extends ASTRAClass {
 			),
 			Predicate.TRUE,
 			new Block(
-				"terranCommandCenter", new int[] {53,22,55,5},
+				"terranCommandCenter", new int[] {54,22,56,5},
 				new Statement[] {
 					new Subgoal(
-						"terranCommandCenter", new int[] {54,8,55,5},
+						"terranCommandCenter", new int[] {55,8,56,5},
 						new Goal(
 							new Predicate("trainSCV", new Term[] {})
 						)
@@ -198,7 +198,7 @@ public class terranCommandCenter extends ASTRAClass {
 			)
 		));
 		addRule(new Rule(
-			"terranCommandCenter", new int[] {57,9,57,69},
+			"terranCommandCenter", new int[] {58,9,58,69},
 			new ModuleEvent("eis",
 				"$eis",
 				new Predicate("event", new Term[] {
@@ -219,16 +219,16 @@ public class terranCommandCenter extends ASTRAClass {
 				new Variable(Type.INTEGER, "prevSize",false)
 			}),
 			new Block(
-				"terranCommandCenter", new int[] {57,68,60,5},
+				"terranCommandCenter", new int[] {58,68,61,5},
 				new Statement[] {
 					new BeliefUpdate('-',
-						"terranCommandCenter", new int[] {58,8,60,5},
+						"terranCommandCenter", new int[] {59,8,61,5},
 						new Predicate("queueSize", new Term[] {
 							new Variable(Type.INTEGER, "prevSize")
 						})
 					),
 					new BeliefUpdate('+',
-						"terranCommandCenter", new int[] {59,8,60,5},
+						"terranCommandCenter", new int[] {60,8,61,5},
 						new Predicate("queueSize", new Term[] {
 							new Variable(Type.INTEGER, "size")
 						})
@@ -237,7 +237,7 @@ public class terranCommandCenter extends ASTRAClass {
 			)
 		));
 		addRule(new Rule(
-			"terranCommandCenter", new int[] {62,9,62,118},
+			"terranCommandCenter", new int[] {63,9,63,118},
 			new ModuleEvent("eis",
 				"$eis",
 				new Predicate("event", new Term[] {
@@ -266,28 +266,28 @@ public class terranCommandCenter extends ASTRAClass {
 				})
 			),
 			new Block(
-				"terranCommandCenter", new int[] {62,117,67,5},
+				"terranCommandCenter", new int[] {63,117,68,5},
 				new Statement[] {
 					new BeliefUpdate('-',
-						"terranCommandCenter", new int[] {63,8,67,5},
+						"terranCommandCenter", new int[] {64,8,68,5},
 						new Predicate("minerals", new Term[] {
 							new Variable(Type.INTEGER, "prevM")
 						})
 					),
 					new BeliefUpdate('-',
-						"terranCommandCenter", new int[] {64,8,67,5},
+						"terranCommandCenter", new int[] {65,8,68,5},
 						new Predicate("vespeneGas", new Term[] {
 							new Variable(Type.INTEGER, "prevG")
 						})
 					),
 					new BeliefUpdate('+',
-						"terranCommandCenter", new int[] {65,8,67,5},
+						"terranCommandCenter", new int[] {66,8,68,5},
 						new Predicate("minerals", new Term[] {
 							new Variable(Type.INTEGER, "minerals")
 						})
 					),
 					new BeliefUpdate('+',
-						"terranCommandCenter", new int[] {66,8,67,5},
+						"terranCommandCenter", new int[] {67,8,68,5},
 						new Predicate("vespeneGas", new Term[] {
 							new Variable(Type.INTEGER, "gas")
 						})
@@ -296,7 +296,7 @@ public class terranCommandCenter extends ASTRAClass {
 			)
 		));
 		addRule(new Rule(
-			"terranCommandCenter", new int[] {69,9,69,110},
+			"terranCommandCenter", new int[] {70,9,70,110},
 			new ModuleEvent("eis",
 				"$eis",
 				new Predicate("event", new Term[] {
@@ -330,21 +330,21 @@ public class terranCommandCenter extends ASTRAClass {
 				)
 			),
 			new Block(
-				"terranCommandCenter", new int[] {69,109,73,5},
+				"terranCommandCenter", new int[] {70,109,74,5},
 				new Statement[] {
 					new BeliefUpdate('-',
-						"terranCommandCenter", new int[] {70,8,73,5},
+						"terranCommandCenter", new int[] {71,8,74,5},
 						new Predicate("supplyRequest", new Term[] {
 							Primitive.newPrimitive(false)
 						})
 					),
 					new BeliefUpdate('+',
-						"terranCommandCenter", new int[] {71,8,73,5},
+						"terranCommandCenter", new int[] {72,8,74,5},
 						new Predicate("supplyRequest", new Term[] {
 							Primitive.newPrimitive(true)
 						})
 					),
-					new Send("terranCommandCenter", new int[] {72,8,72,63},
+					new Send("terranCommandCenter", new int[] {73,8,73,63},
 						new Performative("inform"),
 						Primitive.newPrimitive("Building Manager"),
 						new Predicate("content", new Term[] {
@@ -355,7 +355,7 @@ public class terranCommandCenter extends ASTRAClass {
 			)
 		));
 		addRule(new Rule(
-			"terranCommandCenter", new int[] {75,9,75,110},
+			"terranCommandCenter", new int[] {76,9,76,110},
 			new ModuleEvent("eis",
 				"$eis",
 				new Predicate("event", new Term[] {
@@ -382,10 +382,10 @@ public class terranCommandCenter extends ASTRAClass {
 				Primitive.newPrimitive(0)
 			),
 			new Block(
-				"terranCommandCenter", new int[] {75,109,77,5},
+				"terranCommandCenter", new int[] {76,109,78,5},
 				new Statement[] {
 					new ModuleCall("S",
-						"terranCommandCenter", new int[] {76,8,76,21},
+						"terranCommandCenter", new int[] {77,8,77,21},
 						new Predicate("terminate", new Term[] {}),
 						new DefaultModuleCallAdaptor() {
 							public boolean inline() {
@@ -402,103 +402,14 @@ public class terranCommandCenter extends ASTRAClass {
 			)
 		));
 		addRule(new Rule(
-			"terranCommandCenter", new int[] {79,9,79,74},
-			new MessageEvent(
-				new Performative("inform"),
-				Primitive.newPrimitive("Exploration Manager"),
-				new Predicate("content", new Term[] {
-					Primitive.newPrimitive("Send Coords")
-				})
-			),
-			Predicate.TRUE,
-			new Block(
-				"terranCommandCenter", new int[] {79,73,82,5},
-				new Statement[] {
-					new Query(
-						"terranCommandCenter", new int[] {80,8,80,68},
-						new ModuleFormula("eis",
-							new Predicate("base", new Term[] {
-								new Variable(Type.INTEGER, "x",false),
-								new Variable(Type.INTEGER, "y",false),
-								new Variable(Type.BOOLEAN, "isStart",false),
-								new Variable(Type.INTEGER, "regionID",false)
-							}),
-							new ModuleFormulaAdaptor() {
-								public Formula invoke(BindingsEvaluateVisitor visitor, Predicate predicate) {
-									return ((astra.lang.EIS) visitor.agent().getModule("terranCommandCenter","eis")).auto_formula((Predicate) predicate.accept(visitor));
-								}
-							}
-						)
-					),
-					new Send("terranCommandCenter", new int[] {81,8,81,58},
-						new Performative("inform"),
-						Primitive.newPrimitive("Exploration Manager"),
-						new Predicate("explore", new Term[] {
-							new Variable(Type.INTEGER, "x"),
-							new Variable(Type.INTEGER, "y")
-						})
-					)
-				}
-			)
-		));
-		addRule(new Rule(
-			"terranCommandCenter", new int[] {85,9,85,50},
-			new ModuleEvent("eis",
-				"$eis",
-				new Predicate("event", new Term[] {
-					new Funct("map", new Term[] {
-						new Variable(Type.INTEGER, "width",false),
-						new Variable(Type.INTEGER, "height",false)
-					})
-				}),
-				new ModuleEventAdaptor() {
-					public Event generate(astra.core.Agent agent, Predicate predicate) {
-						return ((astra.lang.EIS) agent.getModule("terranCommandCenter","eis")).event(
-							"+",
-							predicate.getTerm(0)
-						);
-					}
-				}
-			),
-			Predicate.TRUE,
-			new Block(
-				"terranCommandCenter", new int[] {85,49,87,5},
-				new Statement[] {
-					new ModuleCall("C",
-						"terranCommandCenter", new int[] {86,8,86,40},
-						new Predicate("println", new Term[] {
-							Operator.newOperator('+',
-								new Variable(Type.INTEGER, "width"),
-								Operator.newOperator('+',
-									Primitive.newPrimitive(", "),
-									new Variable(Type.INTEGER, "height")
-								)
-							)
-						}),
-						new DefaultModuleCallAdaptor() {
-							public boolean inline() {
-								return false;
-							}
-
-							public boolean invoke(Intention intention, Predicate predicate) {
-								return ((astra.lang.Console) intention.getModule("terranCommandCenter","C")).println(
-									(java.lang.String) intention.evaluate(predicate.getTerm(0))
-								);
-							}
-						}
-					)
-				}
-			)
-		));
-		addRule(new Rule(
-			"terranCommandCenter", new int[] {89,9,89,73},
+			"terranCommandCenter", new int[] {80,9,80,94},
 			new ModuleEvent("eis",
 				"$eis",
 				new Predicate("event", new Term[] {
 					new Funct("base", new Term[] {
 						new Variable(Type.INTEGER, "x",false),
 						new Variable(Type.INTEGER, "y",false),
-						new Variable(Type.BOOLEAN, "isStart",false),
+						new Variable(Type.STRING, "isStart",false),
 						new Variable(Type.INTEGER, "regionID",false)
 					})
 				}),
@@ -511,14 +422,20 @@ public class terranCommandCenter extends ASTRAClass {
 					}
 				}
 			),
-			Predicate.TRUE,
+			new BracketFormula(
+				new Comparison("~=",
+					new Variable(Type.STRING, "isStart"),
+					Primitive.newPrimitive("true")
+				)
+			),
 			new Block(
-				"terranCommandCenter", new int[] {89,72,91,5},
+				"terranCommandCenter", new int[] {80,93,82,5},
 				new Statement[] {
-					new ModuleCall("C",
-						"terranCommandCenter", new int[] {90,8,90,27},
-						new Predicate("println", new Term[] {
-							Primitive.newPrimitive("bases!")
+					new ModuleCall("explore",
+						"terranCommandCenter", new int[] {81,8,81,29},
+						new Predicate("addBase", new Term[] {
+							new Variable(Type.INTEGER, "x"),
+							new Variable(Type.INTEGER, "y")
 						}),
 						new DefaultModuleCallAdaptor() {
 							public boolean inline() {
@@ -526,8 +443,9 @@ public class terranCommandCenter extends ASTRAClass {
 							}
 
 							public boolean invoke(Intention intention, Predicate predicate) {
-								return ((astra.lang.Console) intention.getModule("terranCommandCenter","C")).println(
-									(java.lang.String) intention.evaluate(predicate.getTerm(0))
+								return ((modules.Exploration) intention.getModule("terranCommandCenter","explore")).addBase(
+									(java.lang.Integer) intention.evaluate(predicate.getTerm(0)),
+									(java.lang.Integer) intention.evaluate(predicate.getTerm(1))
 								);
 							}
 						}
@@ -592,6 +510,7 @@ public class terranCommandCenter extends ASTRAClass {
 		fragment.addModule("C",astra.lang.Console.class,agent);
 		fragment.addModule("S",astra.lang.System.class,agent);
 		fragment.addModule("P",astra.lang.Prelude.class,agent);
+		fragment.addModule("explore",modules.Exploration.class,agent);
 		return fragment;
 	}
 

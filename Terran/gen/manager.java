@@ -29,7 +29,7 @@ public class manager extends ASTRAClass {
 			),
 			Predicate.TRUE,
 			new Block(
-				"manager", new int[] {19,27,33,5},
+				"manager", new int[] {19,27,32,5},
 				new Statement[] {
 					new ModuleCall("eis",
 						"manager", new int[] {20,8,20,53},
@@ -198,6 +198,25 @@ public class manager extends ASTRAClass {
 						}
 					),
 					new ModuleCall("S",
+						"manager", new int[] {29,8,29,56},
+						new Predicate("createAgent", new Term[] {
+							Primitive.newPrimitive("Combat Manager"),
+							Primitive.newPrimitive("combatManager")
+						}),
+						new DefaultModuleCallAdaptor() {
+							public boolean inline() {
+								return false;
+							}
+
+							public boolean invoke(Intention intention, Predicate predicate) {
+								return ((astra.lang.System) intention.getModule("manager","S")).createAgent(
+									(java.lang.String) intention.evaluate(predicate.getTerm(0)),
+									(java.lang.String) intention.evaluate(predicate.getTerm(1))
+								);
+							}
+						}
+					),
+					new ModuleCall("S",
 						"manager", new int[] {30,8,30,66},
 						new Predicate("createAgent", new Term[] {
 							Primitive.newPrimitive("Exploration Manager"),
@@ -217,7 +236,7 @@ public class manager extends ASTRAClass {
 						}
 					),
 					new Subgoal(
-						"manager", new int[] {32,8,33,5},
+						"manager", new int[] {31,8,32,5},
 						new Goal(
 							new Predicate("play", new Term[] {})
 						)
@@ -226,7 +245,7 @@ public class manager extends ASTRAClass {
 			)
 		));
 		addRule(new Rule(
-			"manager", new int[] {35,9,35,60},
+			"manager", new int[] {34,9,34,60},
 			new GoalEvent('+',
 				new Goal(
 					new Predicate("play", new Term[] {})
@@ -236,11 +255,11 @@ public class manager extends ASTRAClass {
 				new Variable(Type.BOOLEAN, "exploreRequest",false)
 			}),
 			new Block(
-				"manager", new int[] {35,59,53,5},
+				"manager", new int[] {34,59,54,5},
 				new Statement[] {
 					new Declaration(
 						new Variable(Type.LIST, "marines"),
-						"manager", new int[] {36,8,53,5},
+						"manager", new int[] {35,8,54,5},
 						new ModuleTerm("S", Type.LIST,
 							new Predicate("getAgentsOfType", new Term[] {
 								Primitive.newPrimitive("terranMarine")
@@ -260,7 +279,7 @@ public class manager extends ASTRAClass {
 						)
 					),
 					new If(
-						"manager", new int[] {37,8,53,5},
+						"manager", new int[] {36,8,54,5},
 						new AND(
 							new BracketFormula(
 								new Comparison(">",
@@ -321,9 +340,9 @@ public class manager extends ASTRAClass {
 							)
 						),
 						new Block(
-							"manager", new int[] {37,90,42,9},
+							"manager", new int[] {36,90,41,9},
 							new Statement[] {
-								new Send("manager", new int[] {38,12,38,65},
+								new Send("manager", new int[] {37,12,37,65},
 									new Performative("inform"),
 									Primitive.newPrimitive("Exploration Manager"),
 									new Predicate("content", new Term[] {
@@ -331,7 +350,7 @@ public class manager extends ASTRAClass {
 									})
 								),
 								new ModuleCall("C",
-									"manager", new int[] {39,12,39,37},
+									"manager", new int[] {38,12,38,37},
 									new Predicate("println", new Term[] {
 										Primitive.newPrimitive("Explore sent")
 									}),
@@ -348,13 +367,13 @@ public class manager extends ASTRAClass {
 									}
 								),
 								new BeliefUpdate('-',
-									"manager", new int[] {40,12,42,9},
+									"manager", new int[] {39,12,41,9},
 									new Predicate("exploreRequest", new Term[] {
 										Primitive.newPrimitive(false)
 									})
 								),
 								new BeliefUpdate('+',
-									"manager", new int[] {41,12,42,9},
+									"manager", new int[] {40,12,41,9},
 									new Predicate("exploreRequest", new Term[] {
 										Primitive.newPrimitive(true)
 									})
@@ -363,7 +382,7 @@ public class manager extends ASTRAClass {
 						)
 					),
 					new If(
-						"manager", new int[] {43,8,53,5},
+						"manager", new int[] {42,8,54,5},
 						new Comparison(">",
 							new ModuleTerm("P", Type.INTEGER,
 								new Predicate("size", new Term[] {
@@ -397,11 +416,11 @@ public class manager extends ASTRAClass {
 							Primitive.newPrimitive(0)
 						),
 						new Block(
-							"manager", new int[] {43,42,51,9},
+							"manager", new int[] {42,42,52,9},
 							new Statement[] {
 								new Declaration(
 									new Variable(Type.LIST, "freeEntities"),
-									"manager", new int[] {44,12,51,9},
+									"manager", new int[] {43,12,52,9},
 									new ModuleTerm("eis", Type.LIST,
 										new Predicate("freeEntities", new Term[] {}),
 										new ModuleTermAdaptor() {
@@ -417,14 +436,14 @@ public class manager extends ASTRAClass {
 									)
 								),
 								new ForAll(
-									"manager", new int[] {46,12,46,44},
+									"manager", new int[] {44,12,44,44},
 									new Variable(Type.STRING, "ID",false),
 									new Variable(Type.LIST, "freeEntities"),
 									new Block(
-										"manager", new int[] {46,45,51,9},
+										"manager", new int[] {44,45,52,9},
 										new Statement[] {
 											new If(
-												"manager", new int[] {47,16,50,13},
+												"manager", new int[] {45,16,51,13},
 												new Comparison("==",
 													new ModuleTerm("ent", Type.BOOLEAN,
 														new Predicate("isAgent", new Term[] {
@@ -462,10 +481,10 @@ public class manager extends ASTRAClass {
 													Primitive.newPrimitive(true)
 												),
 												new Block(
-													"manager", new int[] {47,63,49,17},
+													"manager", new int[] {45,63,47,17},
 													new Statement[] {
 														new ModuleCall("S",
-															"manager", new int[] {48,20,48,60},
+															"manager", new int[] {46,20,46,60},
 															new Predicate("createAgent", new Term[] {
 																new Variable(Type.STRING, "ID"),
 																new ModuleTerm("eis", Type.STRING,
@@ -500,6 +519,30 @@ public class manager extends ASTRAClass {
 															}
 														)
 													}
+												),
+												new Block(
+													"manager", new int[] {48,21,51,13},
+													new Statement[] {
+														new ModuleCall("S",
+															"manager", new int[] {49,20,49,51},
+															new Predicate("createAgent", new Term[] {
+																new Variable(Type.STRING, "ID"),
+																Primitive.newPrimitive("dummyAgent")
+															}),
+															new DefaultModuleCallAdaptor() {
+																public boolean inline() {
+																	return false;
+																}
+
+																public boolean invoke(Intention intention, Predicate predicate) {
+																	return ((astra.lang.System) intention.getModule("manager","S")).createAgent(
+																		(java.lang.String) intention.evaluate(predicate.getTerm(0)),
+																		(java.lang.String) intention.evaluate(predicate.getTerm(1))
+																	);
+																}
+															}
+														)
+													}
 												)
 											)
 										}
@@ -509,7 +552,7 @@ public class manager extends ASTRAClass {
 						)
 					),
 					new Subgoal(
-						"manager", new int[] {52,8,53,5},
+						"manager", new int[] {53,8,54,5},
 						new Goal(
 							new Predicate("play", new Term[] {})
 						)
@@ -518,7 +561,27 @@ public class manager extends ASTRAClass {
 			)
 		));
 		addRule(new Rule(
-			"manager", new int[] {55,9,55,73},
+			"manager", new int[] {56,9,56,19},
+			new GoalEvent('+',
+				new Goal(
+					new Predicate("play", new Term[] {})
+				)
+			),
+			Predicate.TRUE,
+			new Block(
+				"manager", new int[] {56,18,58,5},
+				new Statement[] {
+					new Subgoal(
+						"manager", new int[] {57,8,58,5},
+						new Goal(
+							new Predicate("play", new Term[] {})
+						)
+					)
+				}
+			)
+		));
+		addRule(new Rule(
+			"manager", new int[] {60,9,60,73},
 			new MessageEvent(
 				new Performative("inform"),
 				Primitive.newPrimitive("Exploration Manager"),
@@ -528,16 +591,16 @@ public class manager extends ASTRAClass {
 			),
 			Predicate.TRUE,
 			new Block(
-				"manager", new int[] {55,72,58,5},
+				"manager", new int[] {60,72,63,5},
 				new Statement[] {
 					new BeliefUpdate('-',
-						"manager", new int[] {56,8,58,5},
+						"manager", new int[] {61,8,63,5},
 						new Predicate("exploreRequest", new Term[] {
 							Primitive.newPrimitive(true)
 						})
 					),
 					new BeliefUpdate('+',
-						"manager", new int[] {57,8,58,5},
+						"manager", new int[] {62,8,63,5},
 						new Predicate("exploreRequest", new Term[] {
 							Primitive.newPrimitive(false)
 						})

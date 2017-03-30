@@ -280,33 +280,30 @@ public class terranMarine extends ASTRAClass {
 			),
 			Predicate.TRUE,
 			new Block(
-				"terranMarine", new int[] {45,110,49,5},
+				"terranMarine", new int[] {45,110,47,5},
 				new Statement[] {
-					new If(
-						"terranMarine", new int[] {46,8,49,5},
-						new Comparison("==",
-							new Variable(Type.BOOLEAN, "friendly"),
-							Primitive.newPrimitive(false)
-						),
-						new Block(
-							"terranMarine", new int[] {46,30,48,9},
-							new Statement[] {
-								new Subgoal(
-									"terranMarine", new int[] {47,12,48,9},
-									new Goal(
-										new Predicate("attackUnit", new Term[] {
-											new Variable(Type.STRING, "ID")
-										})
-									)
-								)
+					new ModuleCall("C",
+						"terranMarine", new int[] {46,8,46,26},
+						new Predicate("println", new Term[] {
+							Primitive.newPrimitive("hello")
+						}),
+						new DefaultModuleCallAdaptor() {
+							public boolean inline() {
+								return false;
 							}
-						)
+
+							public boolean invoke(Intention intention, Predicate predicate) {
+								return ((astra.lang.Console) intention.getModule("terranMarine","C")).println(
+									(java.lang.String) intention.evaluate(predicate.getTerm(0))
+								);
+							}
+						}
 					)
 				}
 			)
 		));
 		addRule(new Rule(
-			"terranMarine", new int[] {51,9,51,73},
+			"terranMarine", new int[] {49,9,49,73},
 			new MessageEvent(
 				new Performative("inform"),
 				Primitive.newPrimitive("Exploration Manager"),
@@ -317,8 +314,20 @@ public class terranMarine extends ASTRAClass {
 			),
 			Predicate.TRUE,
 			new Block(
-				"terranMarine", new int[] {51,72,53,5},
+				"terranMarine", new int[] {49,72,53,5},
 				new Statement[] {
+					new BeliefUpdate('-',
+						"terranMarine", new int[] {50,8,53,5},
+						new Predicate("exploring", new Term[] {
+							Primitive.newPrimitive(false)
+						})
+					),
+					new BeliefUpdate('+',
+						"terranMarine", new int[] {51,8,53,5},
+						new Predicate("exploring", new Term[] {
+							Primitive.newPrimitive(true)
+						})
+					),
 					new ModuleCall("eis",
 						"terranMarine", new int[] {52,8,52,24},
 						new Predicate("attack", new Term[] {
@@ -351,10 +360,30 @@ public class terranMarine extends ASTRAClass {
 				Primitive.newPrimitive(false)
 			}),
 			new Block(
-				"terranMarine", new int[] {55,79,57,5},
+				"terranMarine", new int[] {55,79,58,5},
 				new Statement[] {
+					new ModuleCall("C",
+						"terranMarine", new int[] {56,8,56,53},
+						new Predicate("println", new Term[] {
+							Operator.newOperator('+',
+								Primitive.newPrimitive("Orders received, attacking "),
+								new Variable(Type.INTEGER, "ID")
+							)
+						}),
+						new DefaultModuleCallAdaptor() {
+							public boolean inline() {
+								return false;
+							}
+
+							public boolean invoke(Intention intention, Predicate predicate) {
+								return ((astra.lang.Console) intention.getModule("terranMarine","C")).println(
+									(java.lang.String) intention.evaluate(predicate.getTerm(0))
+								);
+							}
+						}
+					),
 					new ModuleCall("eis",
-						"terranMarine", new int[] {56,8,56,22},
+						"terranMarine", new int[] {57,8,57,22},
 						new Predicate("attack", new Term[] {
 							new Variable(Type.INTEGER, "ID")
 						}),

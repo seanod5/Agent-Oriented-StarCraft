@@ -1,5 +1,8 @@
 package modules;
 
+import java.util.ArrayList;
+import java.util.Random;
+
 import astra.core.Module;
 import astra.term.ListTerm;
 import astra.term.Primitive;

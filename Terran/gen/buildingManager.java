@@ -77,10 +77,10 @@ public class buildingManager extends ASTRAClass {
 				new Variable(Type.BOOLEAN, "isStart",false)
 			}),
 			new Block(
-				"buildingManager", new int[] {28,50,50,5},
+				"buildingManager", new int[] {28,50,49,5},
 				new Statement[] {
 					new If(
-						"buildingManager", new int[] {29,8,50,5},
+						"buildingManager", new int[] {29,8,49,5},
 						new Comparison("==",
 							new Variable(Type.BOOLEAN, "isStart"),
 							Primitive.newPrimitive(false)
@@ -123,7 +123,7 @@ public class buildingManager extends ASTRAClass {
 						)
 					),
 					new Subgoal(
-						"buildingManager", new int[] {35,8,50,5},
+						"buildingManager", new int[] {34,8,49,5},
 						new Goal(
 							new Predicate("build", new Term[] {
 								Primitive.newPrimitive("Terran Supply Depot")
@@ -131,7 +131,7 @@ public class buildingManager extends ASTRAClass {
 						)
 					),
 					new ModuleCall("C",
-						"buildingManager", new int[] {36,8,36,31},
+						"buildingManager", new int[] {35,8,35,31},
 						new Predicate("println", new Term[] {
 							Primitive.newPrimitive("waiting...")
 						}),
@@ -148,13 +148,13 @@ public class buildingManager extends ASTRAClass {
 						}
 					),
 					new Wait(
-						"buildingManager", new int[] {37,8,50,5},
+						"buildingManager", new int[] {36,8,49,5},
 						new Predicate("buildPending", new Term[] {
 							Primitive.newPrimitive(false)
 						})
 					),
 					new Subgoal(
-						"buildingManager", new int[] {38,8,50,5},
+						"buildingManager", new int[] {37,8,49,5},
 						new Goal(
 							new Predicate("build", new Term[] {
 								Primitive.newPrimitive("Terran Refinery")
@@ -162,7 +162,7 @@ public class buildingManager extends ASTRAClass {
 						)
 					),
 					new ModuleCall("C",
-						"buildingManager", new int[] {39,8,39,31},
+						"buildingManager", new int[] {38,8,38,31},
 						new Predicate("println", new Term[] {
 							Primitive.newPrimitive("waiting...")
 						}),
@@ -179,13 +179,13 @@ public class buildingManager extends ASTRAClass {
 						}
 					),
 					new Wait(
-						"buildingManager", new int[] {40,8,50,5},
+						"buildingManager", new int[] {39,8,49,5},
 						new Predicate("buildPending", new Term[] {
 							Primitive.newPrimitive(false)
 						})
 					),
 					new Subgoal(
-						"buildingManager", new int[] {41,8,50,5},
+						"buildingManager", new int[] {40,8,49,5},
 						new Goal(
 							new Predicate("build", new Term[] {
 								Primitive.newPrimitive("Terran Barracks")
@@ -193,7 +193,7 @@ public class buildingManager extends ASTRAClass {
 						)
 					),
 					new ModuleCall("C",
-						"buildingManager", new int[] {42,8,42,31},
+						"buildingManager", new int[] {41,8,41,31},
 						new Predicate("println", new Term[] {
 							Primitive.newPrimitive("waiting...")
 						}),
@@ -210,36 +210,42 @@ public class buildingManager extends ASTRAClass {
 						}
 					),
 					new Wait(
-						"buildingManager", new int[] {43,8,50,5},
+						"buildingManager", new int[] {42,8,49,5},
 						new Predicate("buildPending", new Term[] {
 							Primitive.newPrimitive(false)
 						})
 					),
 					new Subgoal(
-						"buildingManager", new int[] {44,8,50,5},
+						"buildingManager", new int[] {43,8,49,5},
 						new Goal(
 							new Predicate("build", new Term[] {
 								Primitive.newPrimitive("Terran Supply Depot")
 							})
 						)
 					),
+					new Wait(
+						"buildingManager", new int[] {44,8,49,5},
+						new Predicate("buildPending", new Term[] {
+							Primitive.newPrimitive(false)
+						})
+					),
 					new If(
-						"buildingManager", new int[] {46,8,50,5},
+						"buildingManager", new int[] {45,8,49,5},
 						new Comparison("==",
 							new Variable(Type.BOOLEAN, "isStart"),
 							Primitive.newPrimitive(true)
 						),
 						new Block(
-							"buildingManager", new int[] {46,28,49,9},
+							"buildingManager", new int[] {45,28,48,9},
 							new Statement[] {
 								new BeliefUpdate('-',
-									"buildingManager", new int[] {47,12,49,9},
+									"buildingManager", new int[] {46,12,48,9},
 									new Predicate("isStart", new Term[] {
 										Primitive.newPrimitive(true)
 									})
 								),
 								new BeliefUpdate('+',
-									"buildingManager", new int[] {48,12,49,9},
+									"buildingManager", new int[] {47,12,48,9},
 									new Predicate("isStart", new Term[] {
 										Primitive.newPrimitive(false)
 									})
@@ -251,7 +257,7 @@ public class buildingManager extends ASTRAClass {
 			)
 		));
 		addRule(new Rule(
-			"buildingManager", new int[] {52,9,52,70},
+			"buildingManager", new int[] {51,9,51,70},
 			new GoalEvent('+',
 				new Goal(
 					new Predicate("build", new Term[] {
@@ -263,23 +269,23 @@ public class buildingManager extends ASTRAClass {
 				new Variable(Type.LIST, "busyBuilders",false)
 			}),
 			new Block(
-				"buildingManager", new int[] {52,69,68,5},
+				"buildingManager", new int[] {51,69,67,5},
 				new Statement[] {
 					new BeliefUpdate('-',
-						"buildingManager", new int[] {53,8,68,5},
+						"buildingManager", new int[] {52,8,67,5},
 						new Predicate("buildPending", new Term[] {
 							Primitive.newPrimitive(false)
 						})
 					),
 					new BeliefUpdate('+',
-						"buildingManager", new int[] {54,8,68,5},
+						"buildingManager", new int[] {53,8,67,5},
 						new Predicate("buildPending", new Term[] {
 							Primitive.newPrimitive(true)
 						})
 					),
 					new Declaration(
 						new Variable(Type.LIST, "SCVs"),
-						"buildingManager", new int[] {56,8,68,5},
+						"buildingManager", new int[] {55,8,67,5},
 						new ModuleTerm("S", Type.LIST,
 							new Predicate("getAgentsOfType", new Term[] {
 								Primitive.newPrimitive("terranSCV")
@@ -300,7 +306,7 @@ public class buildingManager extends ASTRAClass {
 					),
 					new Declaration(
 						new Variable(Type.STRING, "SCV"),
-						"buildingManager", new int[] {57,8,68,5},
+						"buildingManager", new int[] {56,8,67,5},
 						new ModuleTerm("P", Type.STRING,
 							new Predicate("getRandomString", new Term[] {
 								new Variable(Type.LIST, "SCVs")
@@ -320,7 +326,7 @@ public class buildingManager extends ASTRAClass {
 						)
 					),
 					new While(
-						"buildingManager", new int[] {58,8,68,5},
+						"buildingManager", new int[] {57,8,67,5},
 						new ModuleFormula("P",
 							new Predicate("contains", new Term[] {
 								new Variable(Type.LIST, "busyBuilders"),
@@ -336,11 +342,11 @@ public class buildingManager extends ASTRAClass {
 						}
 							),
 						new Block(
-							"buildingManager", new int[] {58,45,60,9},
+							"buildingManager", new int[] {57,45,59,9},
 							new Statement[] {
 								new Assignment(
 									new Variable(Type.STRING, "SCV"),
-									"buildingManager", new int[] {59,12,60,9},
+									"buildingManager", new int[] {58,12,59,9},
 									new ModuleTerm("P", Type.STRING,
 										new Predicate("getRandomString", new Term[] {
 											new Variable(Type.LIST, "SCVs")
@@ -362,7 +368,7 @@ public class buildingManager extends ASTRAClass {
 							}
 						)
 					),
-					new Send("buildingManager", new int[] {62,8,62,45},
+					new Send("buildingManager", new int[] {61,8,61,45},
 						new Performative("inform"),
 						new Variable(Type.STRING, "SCV"),
 						new Predicate("content", new Term[] {
@@ -370,7 +376,7 @@ public class buildingManager extends ASTRAClass {
 						})
 					),
 					new ModuleCall("C",
-						"buildingManager", new int[] {63,8,63,56},
+						"buildingManager", new int[] {62,8,62,56},
 						new Predicate("println", new Term[] {
 							Operator.newOperator('+',
 								new Variable(Type.STRING, "structure"),
@@ -393,13 +399,13 @@ public class buildingManager extends ASTRAClass {
 						}
 					),
 					new BeliefUpdate('-',
-						"buildingManager", new int[] {65,8,68,5},
+						"buildingManager", new int[] {64,8,67,5},
 						new Predicate("busyBuilders", new Term[] {
 							new Variable(Type.LIST, "busyBuilders")
 						})
 					),
 					new ModuleCall("P",
-						"buildingManager", new int[] {66,8,66,32},
+						"buildingManager", new int[] {65,8,65,32},
 						new Predicate("add", new Term[] {
 							new Variable(Type.LIST, "busyBuilders"),
 							new Variable(Type.STRING, "SCV")
@@ -418,7 +424,7 @@ public class buildingManager extends ASTRAClass {
 						}
 					),
 					new BeliefUpdate('+',
-						"buildingManager", new int[] {67,8,68,5},
+						"buildingManager", new int[] {66,8,67,5},
 						new Predicate("busyBuilders", new Term[] {
 							new Variable(Type.LIST, "busyBuilders")
 						})
@@ -427,7 +433,7 @@ public class buildingManager extends ASTRAClass {
 			)
 		));
 		addRule(new Rule(
-			"buildingManager", new int[] {70,9,70,101},
+			"buildingManager", new int[] {69,9,69,101},
 			new MessageEvent(
 				new Performative("inform"),
 				new Variable(Type.STRING, "sender",false),
@@ -439,49 +445,49 @@ public class buildingManager extends ASTRAClass {
 				new Variable(Type.LIST, "busyBuilders",false)
 			}),
 			new Block(
-				"buildingManager", new int[] {70,100,87,5},
+				"buildingManager", new int[] {69,100,86,5},
 				new Statement[] {
 					new If(
-						"buildingManager", new int[] {71,8,87,5},
+						"buildingManager", new int[] {70,8,86,5},
 						new Comparison("==",
 							new Variable(Type.STRING, "content"),
 							Primitive.newPrimitive("Building")
 						),
 						new Block(
-							"buildingManager", new int[] {71,34,74,9},
+							"buildingManager", new int[] {70,34,73,9},
 							new Statement[] {
 							}
 						)
 					),
 					new If(
-						"buildingManager", new int[] {76,8,87,5},
+						"buildingManager", new int[] {75,8,86,5},
 						new Comparison("==",
 							new Variable(Type.STRING, "content"),
 							Primitive.newPrimitive("Done")
 						),
 						new Block(
-							"buildingManager", new int[] {76,31,82,9},
+							"buildingManager", new int[] {75,31,81,9},
 							new Statement[] {
 								new BeliefUpdate('-',
-									"buildingManager", new int[] {77,12,82,9},
+									"buildingManager", new int[] {76,12,81,9},
 									new Predicate("buildPending", new Term[] {
 										Primitive.newPrimitive(true)
 									})
 								),
 								new BeliefUpdate('+',
-									"buildingManager", new int[] {78,12,82,9},
+									"buildingManager", new int[] {77,12,81,9},
 									new Predicate("buildPending", new Term[] {
 										Primitive.newPrimitive(false)
 									})
 								),
 								new BeliefUpdate('-',
-									"buildingManager", new int[] {79,12,82,9},
+									"buildingManager", new int[] {78,12,81,9},
 									new Predicate("busyBuilders", new Term[] {
 										new Variable(Type.LIST, "busyBuilders")
 									})
 								),
 								new ModuleCall("P",
-									"buildingManager", new int[] {80,12,80,42},
+									"buildingManager", new int[] {79,12,79,42},
 									new Predicate("remove", new Term[] {
 										new Variable(Type.LIST, "busyBuilders"),
 										new Variable(Type.STRING, "sender")
@@ -500,7 +506,7 @@ public class buildingManager extends ASTRAClass {
 									}
 								),
 								new BeliefUpdate('+',
-									"buildingManager", new int[] {81,12,82,9},
+									"buildingManager", new int[] {80,12,81,9},
 									new Predicate("busyBuilders", new Term[] {
 										new Variable(Type.LIST, "busyBuilders")
 									})
@@ -509,16 +515,16 @@ public class buildingManager extends ASTRAClass {
 						)
 					),
 					new If(
-						"buildingManager", new int[] {84,8,87,5},
+						"buildingManager", new int[] {83,8,86,5},
 						new Comparison("==",
 							new Variable(Type.STRING, "content"),
 							Primitive.newPrimitive("Build Base")
 						),
 						new Block(
-							"buildingManager", new int[] {84,36,86,9},
+							"buildingManager", new int[] {83,36,85,9},
 							new Statement[] {
 								new Subgoal(
-									"buildingManager", new int[] {85,12,86,9},
+									"buildingManager", new int[] {84,12,85,9},
 									new Goal(
 										new Predicate("buildBase", new Term[] {})
 									)

@@ -26,9 +26,8 @@ agent manager {
 		messaging.installService("local", "astra.messaging.LocalMQService");
 		messaging.startService("local");
 		S.createAgent("Building Manager", "buildingManager");
-		//S.createAgent("Combat Manager", "combatManager");
+		S.createAgent("Combat Manager", "combatManager");
 		S.createAgent("Exploration Manager", "explorationManager");
-		
 		!play();
 	}
 	
@@ -42,13 +41,19 @@ agent manager {
 		}
 		if(P.size(eis.freeEntities()) > 0) {
 			list freeEntities = eis.freeEntities();
-			
 			forall(string ID : freeEntities) {
 				if(ent.isAgent(eis.getEntityType(ID)) == true) {
 					S.createAgent(ID, eis.getEntityType(ID));	//Class names match entity types.	
 				}
+				else {
+					S.createAgent(ID, "dummyAgent");
+				}
 			}
 		}
+		!play();
+	}
+	
+	rule +!play() {
 		!play();
 	}
 	

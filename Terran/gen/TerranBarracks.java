@@ -305,12 +305,12 @@ public class terranBarracks extends ASTRAClass {
 			)
 		));
 		addRule(new Rule(
-			"terranBarracks", new int[] {60,9,60,109},
+			"terranBarracks", new int[] {60,9,60,159},
 			new ModuleEvent("eis",
 				"$eis",
 				new Predicate("event", new Term[] {
 					new Funct("unit", new Term[] {
-						new Variable(Type.BOOLEAN, "isFriendly",false),
+						new Variable(Type.STRING, "isFriendly",false),
 						new Variable(Type.STRING, "type",false),
 						new Variable(Type.INTEGER, "ID",false),
 						new Variable(Type.INTEGER, "health",false),
@@ -327,14 +327,45 @@ public class terranBarracks extends ASTRAClass {
 					}
 				}
 			),
-			Predicate.TRUE,
+			new AND(
+				new BracketFormula(
+					new Comparison("==",
+						new Variable(Type.STRING, "isFriendly"),
+						Primitive.newPrimitive("false")
+					)
+				),
+				new BracketFormula(
+					new Predicate("attackOrdered", new Term[] {
+						Primitive.newPrimitive(false)
+					})
+				)
+			),
 			new Block(
-				"terranBarracks", new int[] {60,108,66,5},
+				"terranBarracks", new int[] {60,158,65,5},
 				new Statement[] {
+					new BeliefUpdate('-',
+						"terranBarracks", new int[] {61,8,65,5},
+						new Predicate("attackOrdered", new Term[] {
+							Primitive.newPrimitive(false)
+						})
+					),
+					new BeliefUpdate('+',
+						"terranBarracks", new int[] {62,8,65,5},
+						new Predicate("attackOrdered", new Term[] {
+							Primitive.newPrimitive(true)
+						})
+					),
+					new Send("terranBarracks", new int[] {63,8,63,51},
+						new Performative("inform"),
+						Primitive.newPrimitive("Combat Manager"),
+						new Predicate("content", new Term[] {
+							new Variable(Type.INTEGER, "ID")
+						})
+					),
 					new ModuleCall("C",
-						"terranBarracks", new int[] {61,8,61,25},
+						"terranBarracks", new int[] {64,8,64,38},
 						new Predicate("println", new Term[] {
-							Primitive.newPrimitive("woop")
+							Primitive.newPrimitive("Attack Order sent")
 						}),
 						new DefaultModuleCallAdaptor() {
 							public boolean inline() {
@@ -352,7 +383,7 @@ public class terranBarracks extends ASTRAClass {
 			)
 		));
 		addRule(new Rule(
-			"terranBarracks", new int[] {75,9,75,110},
+			"terranBarracks", new int[] {67,9,67,110},
 			new ModuleEvent("eis",
 				"$eis",
 				new Predicate("event", new Term[] {
@@ -379,10 +410,10 @@ public class terranBarracks extends ASTRAClass {
 				Primitive.newPrimitive(0)
 			),
 			new Block(
-				"terranBarracks", new int[] {75,109,77,5},
+				"terranBarracks", new int[] {67,109,69,5},
 				new Statement[] {
 					new ModuleCall("S",
-						"terranBarracks", new int[] {76,8,76,21},
+						"terranBarracks", new int[] {68,8,68,21},
 						new Predicate("terminate", new Term[] {}),
 						new DefaultModuleCallAdaptor() {
 							public boolean inline() {

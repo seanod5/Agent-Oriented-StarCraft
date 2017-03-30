@@ -43,16 +43,17 @@ agent terranMarine {
 	}
 	
 	rule +$eis.event(unit(boolean friendly, string type, string ID, int health, int shield, list conditions)) {
-		if(friendly == false) {
-			!attackUnit(ID);
-		}
+		C.println("hello");
 	}
 	
 	rule @message(inform, "Exploration Manager", explore(int x, int y)) {
+		-exploring(false);
+		+exploring(true);
 		eis.attack(x, y);
 	}
 	
 	rule @message(inform, "Combat Manager", attack(int ID)) : exploring(false) {
+		C.println("Orders received, attacking " + ID);
 		eis.attack(ID);
 	}
 }

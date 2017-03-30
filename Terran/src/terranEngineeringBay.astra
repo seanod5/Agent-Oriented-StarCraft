@@ -1,9 +1,0 @@
-agent terranEngineeringBay {
-	module EIS eis;
-	initial !init();
-	
-	rule +!init() {
-		eis.join("starcraft");
-		eis.link();
-	}
-}

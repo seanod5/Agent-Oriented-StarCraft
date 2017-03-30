@@ -57,20 +57,12 @@ agent terranBarracks {
 		+queueSize(size);
 	}
 	
-	rule +$eis.event(unit(boolean isFriendly, string type, int ID, int health, int shield, list condition)) {
-		C.println("woop");
-//		-attackOrdered(false);
-//		+attackOrdered(true);
-//		send(inform, "Combat Manager", content(ID));
-//		C.println("Attack Order sent");
+	rule +$eis.event(unit(string isFriendly, string type, int ID, int health, int shield, list condition)) : (isFriendly == "false") & (attackOrdered(false)) {
+		-attackOrdered(false);
+		+attackOrdered(true);
+		send(inform, "Combat Manager", content(ID));
+		C.println("Attack Order sent");
 	}
-	
-//	rule +$eis.event(unit(boolean isFriendly, string type, int ID, int health, int shield, list condition)) : (isFriendly == false) & (attackOrdered(false)) {
-//		-attackOrdered(false);
-//		+attackOrdered(true);
-//		send(inform, "Combat Manager", content(ID));
-//		C.println("Attack Order sent");
-//	}
 	
 	rule +$eis.event(status(int health, int shield, int energy, list conditions, int x, int y)) : health == 0 {
 		S.terminate();

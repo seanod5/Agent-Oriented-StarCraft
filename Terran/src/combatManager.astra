@@ -9,7 +9,12 @@ agent combatManager {
 		formula attack(int);
 	}
 	
+	types status {
+		formula ordersReceived(boolean);
+	}
+	
 	initial !init();
+	initial ordersReceived(false);
 	
 	rule +!init() {
 		eis.join("starcraft");
@@ -17,19 +22,18 @@ agent combatManager {
 	}
 	
 	rule +!orderAttack(int ID) {
-		list army = [];
 		list allEntities = eis.allEntities();
+		C.println("All Entities size: " + P.size(allEntities));
 		forall(string entity : allEntities) {
 			if(ent.canAttack(eis.getEntityType(entity)) == true) {
-				P.add(army, entity);
+				send(inform, entity, attack(ID));
 			}
-		}
-		forall(string entity : army) {
-			send(inform, entity, attack(ID));
 		}
 	}
 	
-	rule @message(inform, string sender, content(int ID)) {
+	rule @message(inform, string sender, content(int ID)) : ordersReceived(false) {
+		-ordersReceived(false);
+		+ordersReceived(true);
 		!orderAttack(ID);
 		C.println("Attack order received");
 	}

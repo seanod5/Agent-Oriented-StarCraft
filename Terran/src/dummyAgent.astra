@@ -1,0 +1,12 @@
+// For the purpose of linking to "non-agent" entities only and removing them from the "allEntities()" list
+
+agent dummyAgent {
+	module EIS eis;
+	
+	initial !init();
+	
+	rule +!init() {
+		eis.join("starcraft");
+		eis.link();
+	}
+}

@@ -19,7 +19,7 @@ public class explorationManager extends ASTRAClass {
 	public explorationManager() {
 		setParents(new Class[] {astra.lang.Agent.class});
 		addRule(new Rule(
-			"explorationManager", new int[] {20,9,20,19},
+			"explorationManager", new int[] {21,9,21,19},
 			new GoalEvent('+',
 				new Goal(
 					new Predicate("init", new Term[] {})
@@ -27,10 +27,10 @@ public class explorationManager extends ASTRAClass {
 			),
 			Predicate.TRUE,
 			new Block(
-				"explorationManager", new int[] {20,18,23,5},
+				"explorationManager", new int[] {21,18,24,5},
 				new Statement[] {
 					new ModuleCall("eis",
-						"explorationManager", new int[] {21,8,21,29},
+						"explorationManager", new int[] {22,8,22,29},
 						new Predicate("join", new Term[] {
 							Primitive.newPrimitive("starcraft")
 						}),
@@ -47,7 +47,7 @@ public class explorationManager extends ASTRAClass {
 						}
 					),
 					new ModuleCall("C",
-						"explorationManager", new int[] {22,8,22,47},
+						"explorationManager", new int[] {23,8,23,47},
 						new Predicate("println", new Term[] {
 							Primitive.newPrimitive("Exploration Manager Online")
 						}),
@@ -67,7 +67,7 @@ public class explorationManager extends ASTRAClass {
 			)
 		));
 		addRule(new Rule(
-			"explorationManager", new int[] {25,9,25,64},
+			"explorationManager", new int[] {26,9,26,64},
 			new GoalEvent('+',
 				new Goal(
 					new Predicate("explore", new Term[] {
@@ -80,23 +80,23 @@ public class explorationManager extends ASTRAClass {
 				new Variable(Type.LIST, "busyAgents",false)
 			}),
 			new Block(
-				"explorationManager", new int[] {25,63,58,5},
+				"explorationManager", new int[] {26,63,59,5},
 				new Statement[] {
 					new Declaration(
 						new Variable(Type.LIST, "party"),
-						"explorationManager", new int[] {26,8,58,5},
+						"explorationManager", new int[] {27,8,59,5},
 						new ListTerm(new Term[] {
 
 						})
 					),
 					new Declaration(
 						new Variable(Type.INTEGER, "i"),
-						"explorationManager", new int[] {27,8,58,5},
+						"explorationManager", new int[] {28,8,59,5},
 						Primitive.newPrimitive(0)
 					),
 					new Declaration(
 						new Variable(Type.LIST, "SCVs"),
-						"explorationManager", new int[] {28,8,58,5},
+						"explorationManager", new int[] {29,8,59,5},
 						new ModuleTerm("S", Type.LIST,
 							new Predicate("getAgentsOfType", new Term[] {
 								Primitive.newPrimitive("terranSCV")
@@ -117,7 +117,7 @@ public class explorationManager extends ASTRAClass {
 					),
 					new Declaration(
 						new Variable(Type.LIST, "marines"),
-						"explorationManager", new int[] {29,8,58,5},
+						"explorationManager", new int[] {30,8,59,5},
 						new ModuleTerm("S", Type.LIST,
 							new Predicate("getAgentsOfType", new Term[] {
 								Primitive.newPrimitive("terranMarine")
@@ -137,17 +137,17 @@ public class explorationManager extends ASTRAClass {
 						)
 					),
 					new While(
-						"explorationManager", new int[] {31,8,58,5},
+						"explorationManager", new int[] {32,8,59,5},
 						new Comparison("<",
 							new Variable(Type.INTEGER, "i"),
 							Primitive.newPrimitive(1)
 						),
 						new Block(
-							"explorationManager", new int[] {31,20,37,9},
+							"explorationManager", new int[] {32,20,38,9},
 							new Statement[] {
 								new Declaration(
 									new Variable(Type.STRING, "SCV"),
-									"explorationManager", new int[] {32,12,37,9},
+									"explorationManager", new int[] {33,12,38,9},
 									new ModuleTerm("P", Type.STRING,
 										new Predicate("getRandomString", new Term[] {
 											new Variable(Type.LIST, "SCVs")
@@ -167,7 +167,7 @@ public class explorationManager extends ASTRAClass {
 									)
 								),
 								new If(
-									"explorationManager", new int[] {33,12,37,9},
+									"explorationManager", new int[] {34,12,38,9},
 									new NOT(
 										new ModuleFormula("P",
 											new Predicate("contains", new Term[] {
@@ -185,10 +185,10 @@ public class explorationManager extends ASTRAClass {
 											)
 									),
 									new Block(
-										"explorationManager", new int[] {33,45,36,13},
+										"explorationManager", new int[] {34,45,37,13},
 										new Statement[] {
 											new ModuleCall("P",
-												"explorationManager", new int[] {34,16,34,33},
+												"explorationManager", new int[] {35,16,35,33},
 												new Predicate("add", new Term[] {
 													new Variable(Type.LIST, "party"),
 													new Variable(Type.STRING, "SCV")
@@ -208,7 +208,7 @@ public class explorationManager extends ASTRAClass {
 											),
 											new PlusPlus(
 												new Variable(Type.INTEGER, "i"),
-												"explorationManager", new int[] {35,16,35,19}
+												"explorationManager", new int[] {36,16,36,19}
 											)
 										}
 									)
@@ -218,21 +218,21 @@ public class explorationManager extends ASTRAClass {
 					),
 					new Assignment(
 						new Variable(Type.INTEGER, "i"),
-						"explorationManager", new int[] {38,8,58,5},
+						"explorationManager", new int[] {39,8,59,5},
 						Primitive.newPrimitive(0)
 					),
 					new While(
-						"explorationManager", new int[] {39,8,58,5},
+						"explorationManager", new int[] {40,8,59,5},
 						new Comparison("<",
 							new Variable(Type.INTEGER, "i"),
 							Primitive.newPrimitive(5)
 						),
 						new Block(
-							"explorationManager", new int[] {39,20,46,9},
+							"explorationManager", new int[] {40,20,47,9},
 							new Statement[] {
 								new Declaration(
 									new Variable(Type.STRING, "marine"),
-									"explorationManager", new int[] {40,12,46,9},
+									"explorationManager", new int[] {41,12,47,9},
 									new ModuleTerm("P", Type.STRING,
 										new Predicate("getRandomString", new Term[] {
 											new Variable(Type.LIST, "marines")
@@ -252,7 +252,7 @@ public class explorationManager extends ASTRAClass {
 									)
 								),
 								new If(
-									"explorationManager", new int[] {41,12,46,9},
+									"explorationManager", new int[] {42,12,47,9},
 									new NOT(
 										new ModuleFormula("P",
 											new Predicate("contains", new Term[] {
@@ -270,10 +270,10 @@ public class explorationManager extends ASTRAClass {
 											)
 									),
 									new Block(
-										"explorationManager", new int[] {41,48,45,13},
+										"explorationManager", new int[] {42,48,46,13},
 										new Statement[] {
 											new ModuleCall("P",
-												"explorationManager", new int[] {42,16,42,36},
+												"explorationManager", new int[] {43,16,43,36},
 												new Predicate("add", new Term[] {
 													new Variable(Type.LIST, "party"),
 													new Variable(Type.STRING, "marine")
@@ -292,7 +292,7 @@ public class explorationManager extends ASTRAClass {
 												}
 											),
 											new ModuleCall("P",
-												"explorationManager", new int[] {43,16,43,41},
+												"explorationManager", new int[] {44,16,44,41},
 												new Predicate("remove", new Term[] {
 													new Variable(Type.LIST, "marines"),
 													new Variable(Type.STRING, "marine")
@@ -312,7 +312,7 @@ public class explorationManager extends ASTRAClass {
 											),
 											new PlusPlus(
 												new Variable(Type.INTEGER, "i"),
-												"explorationManager", new int[] {44,16,44,19}
+												"explorationManager", new int[] {45,16,45,19}
 											)
 										}
 									)
@@ -321,7 +321,7 @@ public class explorationManager extends ASTRAClass {
 						)
 					),
 					new ModuleCall("C",
-						"explorationManager", new int[] {48,8,48,43},
+						"explorationManager", new int[] {49,8,49,43},
 						new Predicate("println", new Term[] {
 							Operator.newOperator('+',
 								Primitive.newPrimitive("Search party: "),
@@ -341,19 +341,19 @@ public class explorationManager extends ASTRAClass {
 						}
 					),
 					new BeliefUpdate('-',
-						"explorationManager", new int[] {50,8,58,5},
+						"explorationManager", new int[] {51,8,59,5},
 						new Predicate("busyAgents", new Term[] {
 							new Variable(Type.LIST, "busyAgents")
 						})
 					),
 					new ForAll(
-						"explorationManager", new int[] {51,8,51,33},
+						"explorationManager", new int[] {52,8,52,33},
 						new Variable(Type.STRING, "ID",false),
 						new Variable(Type.LIST, "party"),
 						new Block(
-							"explorationManager", new int[] {51,34,58,5},
+							"explorationManager", new int[] {52,34,59,5},
 							new Statement[] {
-								new Send("explorationManager", new int[] {52,12,52,43},
+								new Send("explorationManager", new int[] {53,12,53,43},
 									new Performative("inform"),
 									new Variable(Type.STRING, "ID"),
 									new Predicate("explore", new Term[] {
@@ -362,7 +362,7 @@ public class explorationManager extends ASTRAClass {
 									})
 								),
 								new ModuleCall("P",
-									"explorationManager", new int[] {53,12,53,33},
+									"explorationManager", new int[] {54,12,54,33},
 									new Predicate("add", new Term[] {
 										new Variable(Type.LIST, "busyAgents"),
 										new Variable(Type.STRING, "ID")
@@ -384,12 +384,12 @@ public class explorationManager extends ASTRAClass {
 						)
 					),
 					new BeliefUpdate('+',
-						"explorationManager", new int[] {55,8,58,5},
+						"explorationManager", new int[] {56,8,59,5},
 						new Predicate("busyAgents", new Term[] {
 							new Variable(Type.LIST, "busyAgents")
 						})
 					),
-					new Send("explorationManager", new int[] {57,8,57,51},
+					new Send("explorationManager", new int[] {58,8,58,51},
 						new Performative("inform"),
 						Primitive.newPrimitive("main"),
 						new Predicate("content", new Term[] {
@@ -400,70 +400,7 @@ public class explorationManager extends ASTRAClass {
 			)
 		));
 		addRule(new Rule(
-			"explorationManager", new int[] {60,9,60,24},
-			new GoalEvent('+',
-				new Goal(
-					new Predicate("getCoords", new Term[] {})
-				)
-			),
-			Predicate.TRUE,
-			new Block(
-				"explorationManager", new int[] {60,23,64,5},
-				new Statement[] {
-					new Declaration(
-						new Variable(Type.LIST, "commandCenters"),
-						"explorationManager", new int[] {61,8,64,5},
-						new ModuleTerm("S", Type.LIST,
-							new Predicate("getAgentsOfType", new Term[] {
-								Primitive.newPrimitive("terranCommandCenter")
-							}),
-							new ModuleTermAdaptor() {
-								public Object invoke(Intention intention, Predicate predicate) {
-									return ((astra.lang.System) intention.getModule("explorationManager","S")).getAgentsOfType(
-										(java.lang.String) intention.evaluate(predicate.getTerm(0))
-									);
-								}
-								public Object invoke(BindingsEvaluateVisitor visitor, Predicate predicate) {
-									return ((astra.lang.System) visitor.agent().getModule("explorationManager","S")).getAgentsOfType(
-										(java.lang.String) visitor.evaluate(predicate.getTerm(0))
-									);
-								}
-							}
-						)
-					),
-					new Declaration(
-						new Variable(Type.STRING, "recipient"),
-						"explorationManager", new int[] {62,8,64,5},
-						new ModuleTerm("P", Type.STRING,
-							new Predicate("getRandomString", new Term[] {
-								new Variable(Type.LIST, "commandCenters")
-							}),
-							new ModuleTermAdaptor() {
-								public Object invoke(Intention intention, Predicate predicate) {
-									return ((modules.Prelude2) intention.getModule("explorationManager","P")).getRandomString(
-										(astra.term.ListTerm) intention.evaluate(predicate.getTerm(0))
-									);
-								}
-								public Object invoke(BindingsEvaluateVisitor visitor, Predicate predicate) {
-									return ((modules.Prelude2) visitor.agent().getModule("explorationManager","P")).getRandomString(
-										(astra.term.ListTerm) visitor.evaluate(predicate.getTerm(0))
-									);
-								}
-							}
-						)
-					),
-					new Send("explorationManager", new int[] {63,8,63,55},
-						new Performative("inform"),
-						new Variable(Type.STRING, "recipient"),
-						new Predicate("content", new Term[] {
-							Primitive.newPrimitive("Send Coords")
-						})
-					)
-				}
-			)
-		));
-		addRule(new Rule(
-			"explorationManager", new int[] {66,9,66,60},
+			"explorationManager", new int[] {61,9,61,60},
 			new MessageEvent(
 				new Performative("inform"),
 				Primitive.newPrimitive("main"),
@@ -473,10 +410,10 @@ public class explorationManager extends ASTRAClass {
 			),
 			Predicate.TRUE,
 			new Block(
-				"explorationManager", new int[] {66,59,70,5},
+				"explorationManager", new int[] {61,59,66,5},
 				new Statement[] {
 					new ModuleCall("C",
-						"explorationManager", new int[] {67,8,67,37},
+						"explorationManager", new int[] {62,8,62,37},
 						new Predicate("println", new Term[] {
 							Primitive.newPrimitive("Explore received")
 						}),
@@ -492,38 +429,87 @@ public class explorationManager extends ASTRAClass {
 							}
 						}
 					),
-					new Subgoal(
-						"explorationManager", new int[] {69,8,70,5},
-						new Goal(
-							new Predicate("explore", new Term[] {
-								Primitive.newPrimitive(0),
-								Primitive.newPrimitive(0)
-							})
+					new Declaration(
+						new Variable(Type.LIST, "coords"),
+						"explorationManager", new int[] {63,8,66,5},
+						new ModuleTerm("explore", Type.LIST,
+							new Predicate("getRandomBase", new Term[] {}),
+							new ModuleTermAdaptor() {
+								public Object invoke(Intention intention, Predicate predicate) {
+									return ((modules.Exploration) intention.getModule("explorationManager","explore")).getRandomBase(
+									);
+								}
+								public Object invoke(BindingsEvaluateVisitor visitor, Predicate predicate) {
+									return ((modules.Exploration) visitor.agent().getModule("explorationManager","explore")).getRandomBase(
+									);
+								}
+							}
 						)
-					)
-				}
-			)
-		));
-		addRule(new Rule(
-			"explorationManager", new int[] {72,9,72,65},
-			new MessageEvent(
-				new Performative("inform"),
-				new Variable(Type.STRING, "sender",false),
-				new Predicate("explore", new Term[] {
-					new Variable(Type.INTEGER, "x",false),
-					new Variable(Type.INTEGER, "y",false)
-				})
-			),
-			Predicate.TRUE,
-			new Block(
-				"explorationManager", new int[] {72,64,74,5},
-				new Statement[] {
+					),
+					new ModuleCall("C",
+						"explorationManager", new int[] {64,8,64,43},
+						new Predicate("println", new Term[] {
+							Operator.newOperator('+',
+								Primitive.newPrimitive("New base at: "),
+								new Variable(Type.LIST, "coords")
+							)
+						}),
+						new DefaultModuleCallAdaptor() {
+							public boolean inline() {
+								return false;
+							}
+
+							public boolean invoke(Intention intention, Predicate predicate) {
+								return ((astra.lang.Console) intention.getModule("explorationManager","C")).println(
+									(java.lang.String) intention.evaluate(predicate.getTerm(0))
+								);
+							}
+						}
+					),
 					new Subgoal(
-						"explorationManager", new int[] {73,8,74,5},
+						"explorationManager", new int[] {65,8,66,5},
 						new Goal(
 							new Predicate("explore", new Term[] {
-								new Variable(Type.INTEGER, "x"),
-								new Variable(Type.INTEGER, "y")
+								new ModuleTerm("P", Type.INTEGER,
+									new Predicate("valueAsInt", new Term[] {
+										new Variable(Type.LIST, "coords"),
+										Primitive.newPrimitive(0)
+									}),
+									new ModuleTermAdaptor() {
+										public Object invoke(Intention intention, Predicate predicate) {
+											return ((modules.Prelude2) intention.getModule("explorationManager","P")).valueAsInt(
+												(astra.term.ListTerm) intention.evaluate(predicate.getTerm(0)),
+												(java.lang.Integer) intention.evaluate(predicate.getTerm(1))
+											);
+										}
+										public Object invoke(BindingsEvaluateVisitor visitor, Predicate predicate) {
+											return ((modules.Prelude2) visitor.agent().getModule("explorationManager","P")).valueAsInt(
+												(astra.term.ListTerm) visitor.evaluate(predicate.getTerm(0)),
+												(java.lang.Integer) visitor.evaluate(predicate.getTerm(1))
+											);
+										}
+									}
+								),
+								new ModuleTerm("P", Type.INTEGER,
+									new Predicate("valueAsInt", new Term[] {
+										new Variable(Type.LIST, "coords"),
+										Primitive.newPrimitive(1)
+									}),
+									new ModuleTermAdaptor() {
+										public Object invoke(Intention intention, Predicate predicate) {
+											return ((modules.Prelude2) intention.getModule("explorationManager","P")).valueAsInt(
+												(astra.term.ListTerm) intention.evaluate(predicate.getTerm(0)),
+												(java.lang.Integer) intention.evaluate(predicate.getTerm(1))
+											);
+										}
+										public Object invoke(BindingsEvaluateVisitor visitor, Predicate predicate) {
+											return ((modules.Prelude2) visitor.agent().getModule("explorationManager","P")).valueAsInt(
+												(astra.term.ListTerm) visitor.evaluate(predicate.getTerm(0)),
+												(java.lang.Integer) visitor.evaluate(predicate.getTerm(1))
+											);
+										}
+									}
+								)
 							})
 						)
 					)
@@ -560,6 +546,7 @@ public class explorationManager extends ASTRAClass {
 		fragment.addModule("S",astra.lang.System.class,agent);
 		fragment.addModule("P",modules.Prelude2.class,agent);
 		fragment.addModule("ent",modules.Entities.class,agent);
+		fragment.addModule("explore",modules.Exploration.class,agent);
 		return fragment;
 	}
 

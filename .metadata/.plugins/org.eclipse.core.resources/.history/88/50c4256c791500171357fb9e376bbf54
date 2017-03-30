@@ -1,0 +1,14 @@
+/buildingManager.astra
+/combatManager.astra
+/dummyAgent.astra
+/explorationManager.astra
+/manager.astra
+/modules/
+/terranBarracks.astra
+/terranCommandCenter.astra
+/terranMarine.astra
+/terranSCV.astra
+/test.astra
+/buildingManager$1.class
+/buildingManager$10.class
+/buildingManager$11.class

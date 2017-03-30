@@ -31,7 +31,6 @@ agent buildingManager {
 			C.println("waiting...");
 			wait(buildPending(false));
 		}
-		
 		!build("Terran Supply Depot");
 		C.println("waiting...");
 		wait(buildPending(false));
@@ -42,7 +41,7 @@ agent buildingManager {
 		C.println("waiting...");
 		wait(buildPending(false));
 		!build("Terran Supply Depot");
-		
+		wait(buildPending(false));
 		if(isStart == true) {
 			-isStart(true);
 			+isStart(false);

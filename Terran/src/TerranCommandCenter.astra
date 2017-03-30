@@ -3,6 +3,7 @@ agent terranCommandCenter {
 	module Console C;
 	module System S;
 	module Prelude P;
+	module modules.Exploration explore;
 	
 	types status {
 		formula queueSize(int);
@@ -76,17 +77,7 @@ agent terranCommandCenter {
 		S.terminate();
 	}
 	
-	rule @message(inform, "Exploration Manager", content("Send Coords")) {
-		query(eis.base(int x, int y, boolean isStart, int regionID));
-		send(inform, "Exploration Manager", explore(x, y));
-	}
-	
-	//DEBUG BELOW///
-	rule +$eis.event(map(int width, int height)) {
-		C.println(width + ", " + height);
-	}
-	
-	rule +$eis.event(base(int x, int y, boolean isStart, int regionID)) {
-		C.println("bases!");
+	rule +$eis.event(base(int x, int y, string isStart, int regionID)) : (isStart ~= "true") {
+		explore.addBase(x, y);
 	}
 }

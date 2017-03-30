@@ -4,6 +4,7 @@ agent explorationManager {
 	module System S;
 	module modules.Prelude2 P;
 	module modules.Entities ent;
+	module modules.Exploration explore;
 	
 	types messaging {
 		formula content(string);
@@ -57,19 +58,10 @@ agent explorationManager {
 		send(inform, "main", content("Party Sent"));
 	}
 	
-	rule +!getCoords() {
-		list commandCenters = S.getAgentsOfType("terranCommandCenter");
-		string recipient = P.getRandomString(commandCenters);
-		send(inform, recipient, content("Send Coords"));
-	}
-	
 	rule @message(inform, "main", content(string content)) {
 		C.println("Explore received");
-//		!getCoords();
-		!explore(0, 0);
-	}
-	
-	rule @message(inform, string sender, explore(int x, int y)) {
-		!explore(x, y);
+		list coords = explore.getRandomBase();
+		C.println("New base at: " + coords);
+		!explore(P.valueAsInt(coords, 0), P.valueAsInt(coords, 1));
 	}
 }

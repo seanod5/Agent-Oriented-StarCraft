@@ -36,8 +36,6 @@ agent terranSCV {
 		eis.join("starcraft");
 		eis.link();
 		C.println("SCV online.");
-		query(eis.unit(boolean isFriendly, string type, int ID, int health, int shield, list condition));
-
 	}
 	
 	rule +!gatherMinerals() : busy(boolean busy) & (busy == false) {
@@ -117,10 +115,14 @@ agent terranSCV {
 	}
 	
 	rule @message(inform, "Exploration Manager", explore(int x, int y)) {
+		eis.stop();
 		eis.move(x, y);
+		-exploring(false);
+		+exploring(true);
 	}
 	
 	rule @message(inform, "Combat Manager", attack(int ID)) : exploring(false) {
+		C.println("Orders received, attacking " + ID);
 		eis.attack(ID);
 	}
 }

@@ -19,7 +19,7 @@ public class combatManager extends ASTRAClass {
 	public combatManager() {
 		setParents(new Class[] {astra.lang.Agent.class});
 		addRule(new Rule(
-			"combatManager", new int[] {14,9,14,19},
+			"combatManager", new int[] {19,9,19,19},
 			new GoalEvent('+',
 				new Goal(
 					new Predicate("init", new Term[] {})
@@ -27,10 +27,10 @@ public class combatManager extends ASTRAClass {
 			),
 			Predicate.TRUE,
 			new Block(
-				"combatManager", new int[] {14,18,17,5},
+				"combatManager", new int[] {19,18,22,5},
 				new Statement[] {
 					new ModuleCall("eis",
-						"combatManager", new int[] {15,8,15,29},
+						"combatManager", new int[] {20,8,20,29},
 						new Predicate("join", new Term[] {
 							Primitive.newPrimitive("starcraft")
 						}),
@@ -47,7 +47,7 @@ public class combatManager extends ASTRAClass {
 						}
 					),
 					new ModuleCall("C",
-						"combatManager", new int[] {16,8,16,42},
+						"combatManager", new int[] {21,8,21,42},
 						new Predicate("println", new Term[] {
 							Primitive.newPrimitive("Combat Manager Online")
 						}),
@@ -67,7 +67,7 @@ public class combatManager extends ASTRAClass {
 			)
 		));
 		addRule(new Rule(
-			"combatManager", new int[] {19,9,19,32},
+			"combatManager", new int[] {24,9,24,32},
 			new GoalEvent('+',
 				new Goal(
 					new Predicate("orderAttack", new Term[] {
@@ -77,18 +77,11 @@ public class combatManager extends ASTRAClass {
 			),
 			Predicate.TRUE,
 			new Block(
-				"combatManager", new int[] {19,31,30,5},
+				"combatManager", new int[] {24,31,32,5},
 				new Statement[] {
 					new Declaration(
-						new Variable(Type.LIST, "army"),
-						"combatManager", new int[] {20,8,30,5},
-						new ListTerm(new Term[] {
-
-						})
-					),
-					new Declaration(
 						new Variable(Type.LIST, "allEntities"),
-						"combatManager", new int[] {21,8,30,5},
+						"combatManager", new int[] {25,8,32,5},
 						new ModuleTerm("eis", Type.LIST,
 							new Predicate("allEntities", new Term[] {}),
 							new ModuleTermAdaptor() {
@@ -103,15 +96,51 @@ public class combatManager extends ASTRAClass {
 							}
 						)
 					),
+					new ModuleCall("C",
+						"combatManager", new int[] {26,8,26,62},
+						new Predicate("println", new Term[] {
+							Operator.newOperator('+',
+								Primitive.newPrimitive("All Entities size: "),
+								new ModuleTerm("P", Type.INTEGER,
+									new Predicate("size", new Term[] {
+										new Variable(Type.LIST, "allEntities")
+									}),
+									new ModuleTermAdaptor() {
+										public Object invoke(Intention intention, Predicate predicate) {
+											return ((modules.Prelude2) intention.getModule("combatManager","P")).size(
+												(astra.term.ListTerm) intention.evaluate(predicate.getTerm(0))
+											);
+										}
+										public Object invoke(BindingsEvaluateVisitor visitor, Predicate predicate) {
+											return ((modules.Prelude2) visitor.agent().getModule("combatManager","P")).size(
+												(astra.term.ListTerm) visitor.evaluate(predicate.getTerm(0))
+											);
+										}
+									}
+								)
+							)
+						}),
+						new DefaultModuleCallAdaptor() {
+							public boolean inline() {
+								return false;
+							}
+
+							public boolean invoke(Intention intention, Predicate predicate) {
+								return ((astra.lang.Console) intention.getModule("combatManager","C")).println(
+									(java.lang.String) intention.evaluate(predicate.getTerm(0))
+								);
+							}
+						}
+					),
 					new ForAll(
-						"combatManager", new int[] {22,8,22,43},
+						"combatManager", new int[] {27,8,27,43},
 						new Variable(Type.STRING, "entity",false),
 						new Variable(Type.LIST, "allEntities"),
 						new Block(
-							"combatManager", new int[] {22,44,30,5},
+							"combatManager", new int[] {27,44,32,5},
 							new Statement[] {
 								new If(
-									"combatManager", new int[] {23,12,26,9},
+									"combatManager", new int[] {28,12,31,9},
 									new Comparison("==",
 										new ModuleTerm("ent", Type.BOOLEAN,
 											new Predicate("canAttack", new Term[] {
@@ -149,46 +178,17 @@ public class combatManager extends ASTRAClass {
 										Primitive.newPrimitive(true)
 									),
 									new Block(
-										"combatManager", new int[] {23,65,25,13},
+										"combatManager", new int[] {28,65,30,13},
 										new Statement[] {
-											new ModuleCall("P",
-												"combatManager", new int[] {24,16,24,35},
-												new Predicate("add", new Term[] {
-													new Variable(Type.LIST, "army"),
-													new Variable(Type.STRING, "entity")
-												}),
-												new DefaultModuleCallAdaptor() {
-													public boolean inline() {
-														return false;
-													}
-
-													public boolean invoke(Intention intention, Predicate predicate) {
-														return ((modules.Prelude2) intention.getModule("combatManager","P")).add(
-															(astra.term.ListTerm) intention.evaluate(predicate.getTerm(0)),
-															(java.lang.String) intention.evaluate(predicate.getTerm(1))
-														);
-													}
-												}
+											new Send("combatManager", new int[] {29,16,29,48},
+												new Performative("inform"),
+												new Variable(Type.STRING, "entity"),
+												new Predicate("attack", new Term[] {
+													new Variable(Type.INTEGER, "ID")
+												})
 											)
 										}
 									)
-								)
-							}
-						)
-					),
-					new ForAll(
-						"combatManager", new int[] {27,8,27,36},
-						new Variable(Type.STRING, "entity",false),
-						new Variable(Type.LIST, "army"),
-						new Block(
-							"combatManager", new int[] {27,37,30,5},
-							new Statement[] {
-								new Send("combatManager", new int[] {28,12,28,44},
-									new Performative("inform"),
-									new Variable(Type.STRING, "entity"),
-									new Predicate("attack", new Term[] {
-										new Variable(Type.INTEGER, "ID")
-									})
 								)
 							}
 						)
@@ -197,7 +197,7 @@ public class combatManager extends ASTRAClass {
 			)
 		));
 		addRule(new Rule(
-			"combatManager", new int[] {32,9,32,59},
+			"combatManager", new int[] {34,9,34,83},
 			new MessageEvent(
 				new Performative("inform"),
 				new Variable(Type.STRING, "sender",false),
@@ -205,12 +205,26 @@ public class combatManager extends ASTRAClass {
 					new Variable(Type.INTEGER, "ID",false)
 				})
 			),
-			Predicate.TRUE,
+			new Predicate("ordersReceived", new Term[] {
+				Primitive.newPrimitive(false)
+			}),
 			new Block(
-				"combatManager", new int[] {32,58,35,5},
+				"combatManager", new int[] {34,82,39,5},
 				new Statement[] {
+					new BeliefUpdate('-',
+						"combatManager", new int[] {35,8,39,5},
+						new Predicate("ordersReceived", new Term[] {
+							Primitive.newPrimitive(false)
+						})
+					),
+					new BeliefUpdate('+',
+						"combatManager", new int[] {36,8,39,5},
+						new Predicate("ordersReceived", new Term[] {
+							Primitive.newPrimitive(true)
+						})
+					),
 					new Subgoal(
-						"combatManager", new int[] {33,8,35,5},
+						"combatManager", new int[] {37,8,39,5},
 						new Goal(
 							new Predicate("orderAttack", new Term[] {
 								new Variable(Type.INTEGER, "ID")
@@ -218,7 +232,7 @@ public class combatManager extends ASTRAClass {
 						)
 					),
 					new ModuleCall("C",
-						"combatManager", new int[] {34,8,34,42},
+						"combatManager", new int[] {38,8,38,42},
 						new Predicate("println", new Term[] {
 							Primitive.newPrimitive("Attack order received")
 						}),
@@ -250,6 +264,11 @@ public class combatManager extends ASTRAClass {
 			new Goal(
 				new Predicate("init", new Term[] {})
 			)
+		);
+		agent.initialize(
+			new Predicate("ordersReceived", new Term[] {
+				Primitive.newPrimitive(false)
+			})
 		);
 	}
 
